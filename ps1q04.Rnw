@@ -1,0 +1,17 @@
+\documentclass{article}
+\title {ps1 Q4}
+\author {Kehsin Su Esther 3033114294}
+
+\begin{document}
+
+\maketitle
+The height of the water level in Lake Huron fluctuates over time. Here I 'analyze' the variation using R. I show a histogram of the lake levels for the period \Sexpr{(start(LakeHuron)[1])} to \Sexpr{(end(LakeHuron)[1])}.
+<<echo=TRUE , fig.height=6>>=
+hist(LakeHuron)
+lowHi <- c(which.min(LakeHuron), which.max(LakeHuron)) 
+yearExtrema <- attributes(LakeHuron)$tsp[1]-1 + lowHi
+@
+
+
+
+\end{document}
