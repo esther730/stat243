@@ -1,0 +1,226 @@
+\documentclass{article}
+\title {ps2}
+\author {Kehsin Su Esther 3033114294}
+
+\begin{document}
+
+\maketitle
+<<>>=
+knitr::opts_chunk$set(tidy = TRUE, cache = TRUE)
+@
+
+(a)save letters in text format:
+
+randomly come out 1e6 samples of letters from a to z and these sample are picked without replacement.\\
+write these samples into tmp1.csv\\
+view the information of tmp1.csv \\
+As each letter is one byte and there will be one byte each ", so totally "a" will contains three bytes.
+The tmp1.csv file contains 1e6 items, so it will be 3,000,000 bytes.
+<<>>=
+library(pryr)
+library(stringr)
+chars <- sample(letters, 1e6, replace = TRUE)
+write.table(chars, file = 'tmp1.csv', row.names = FALSE, quote = FALSE,col.names = FALSE)
+system('ls -l tmp1.csv', intern = TRUE)
+@
+combines samples without delimeters\\
+write the combined string into a tmp2.csv\\
+view the information of tmp2.csv(the size has changed)\\
+the totally byte will become 1e6 chars add one byte for each ', so it is 1e6+2 bytes
+<<>>=
+chars <- paste(chars, collapse = '')
+write.table(chars, file = 'tmp2.csv', row.names = FALSE, quote = FALSE,col.names = FALSE)
+system('ls -l tmp2.csv', intern = TRUE)
+@
+
+save in binary format:\\
+simulate 1e6 numeric data and save them into binary data, each is 8bytes and due to system setting, totally will nearly 8*1e6
+<<>>=
+nums <- rnorm(1e6)
+save(nums, file = 'tmp3.Rda')
+system('ls -l tmp3.Rda', intern = TRUE)
+@
+save in text format:
+it will cost more space when comparing to binary data type\\
+the longest length of the item is those negative items with length 18 and consider the delimeter ',', which totally has 19bytes, so roughly, tmp4 will have 19*1e6 and consider some of them are positive, it will be about 18*1e6 to 19*1e6 bytes
+<<>>=
+write.table(nums, file = 'tmp4.csv', row.names = FALSE, quote = FALSE,col.names = FALSE, sep = ',')
+system('ls -l tmp4.csv', intern = TRUE)
+@
+after rounding,length of each item shorter, so totally cost less space\\
+same concept as above, each item has length 4 or 5 and consider the delimeter of  ',', the totally bytes will between 5*1e^6 to 6 *1e6
+<<>>=
+write.table(round(nums, 2), file = 'tmp5.csv', row.names = FALSE,quote = FALSE, col.names = FALSE, sep = ',')
+system('ls -l tmp5.csv', intern = TRUE)
+@
+(b)
+each char is 1byte and consider the system setting it will be about 1e6 bytes
+<<>>=
+chars <- sample(letters, 1e6, replace = TRUE) 
+chars <- paste(chars, collapse = '')
+save(chars, file = 'tmp6.Rda')
+system('ls -l tmp6.Rda', intern = TRUE)
+summary(chars)
+object_size(chars[1])
+@
+
+use rep function and save into a pointer, so the size will become smaller significantly.
+<<>>=
+chars <- rep('a', 1e6)
+chars <- paste(chars, collapse = '') 
+save(chars, file = 'tmp7.Rda') 
+system('ls -l tmp7.Rda', intern = TRUE)
+summary(chars)
+object_size(chars[1])
+@
+
+2
+(a)
+step1, add scholar's name into the url, and use paste function to combine it to the original url\\
+step2, use if statement to rule out the invalid scholar names\\
+step3, use readline and getlink to the scholar's citation page
+step4, get the scholar's id from those links obtain in step3 and add it into the google scholr url to download the html page\\
+step5, print out the scholar's id and return the scholar's html page
+<<>>=
+library(stringr)
+library(XML)
+library(RCurl)
+library(curl)
+scholarlookup <- function(sch_name){
+    url <- paste("https://scholar.google.com/citations?view_op=search_authors&mauthors=",sch_name,"&hl=en&oi=ao")
+  Sys.sleep(2)
+  if(  str_detect(sch_name, '[[:punct:]]') || str_detect(sch_name, '[[:digit:]]') ){
+  cat('invalid scholar name')}else{
+    page <- readLines(url)
+  link <- getHTMLLinks(page)
+  id <-strsplit(strsplit(link[9],split="=")[[1]][2],split="&")[[1]][1]
+  htmlpage <- gsub(" ", "", paste("https://scholar.google.com",link[9]), fixed = TRUE)
+          
+  scholar<-htmlParse(readLines(htmlpage))
+  cat(sch_name,"'s id is",id,"\n")
+  return(scholar)
+    
+  }
+  }
+@
+
+<<eval=FALSE>>=
+scholarlookup("Geoffrey Hinton") #test1
+@
+
+<<eval=FALSE>>=
+scholarlookup("Sandrine Dudoit") #test2
+@
+
+(b)
+step1, use the above results of 2(a) to get scholar's citation page. \\
+step2, use getNodeSet function to get different part of html page, and found article, in under 'gsc_a_t' class. \\
+step3, found authors and journal are both in the 'gs_gray' class. \\
+step4, divide the authors/journal by different oders(authors is the odd parts, and journal is the even part) 
+step5, use the same method to gain citiation and years. \\
+step6, write article, author, journal, citation, year into data frame. 
+
+<<>>=
+scholardf <- function(sch_name){
+    url <- paste("https://scholar.google.com/citations?view_op=search_authors&mauthors=",sch_name,"&hl=en&oi=ao")
+  Sys.sleep(2)
+  if(  str_detect(sch_name, '[[:punct:]]') || str_detect(sch_name, '[[:digit:]]') ){
+  cat('invalid scholar name')}else{
+  page <- readLines(url)
+  link <- getHTMLLinks(page)
+  id <-strsplit(strsplit(link[9],split="=")[[1]][2],split="&")[[1]][1]
+  htmlpage <- gsub(" ", "", paste("https://scholar.google.com",link[9]), fixed = TRUE)
+          
+  scholar<-htmlParse(readLines(htmlpage))
+  article_content <- getNodeSet(scholar, "//td[@class = 'gsc_a_t']/a") 
+  article <- sapply(article_content, xmlValue)
+  gray_content <- getNodeSet(scholar, "//div[@class='gs_gray']")
+  a_j <- sapply(gray_content, xmlValue)
+  authors<-a_j[seq(1,length(a_j),2)]
+  journal<-a_j[seq(2,length(a_j),2)]
+  cit_content <- getNodeSet(scholar, "//td[@class = 'gsc_a_c']/a") 
+  cit <- sapply(cit_content, xmlValue)
+  year_content <- getNodeSet(scholar, "//span[@class = 'gsc_a_h']") 
+  year <- sapply(year_content, xmlValue)[-1]
+  df_sc <- data.frame(article, authors, journal, cit, year)
+  return(summary(df_sc))
+  }
+}
+@
+
+<<eval=FALSE>>=
+scholarlookup("Geoffrey Hinton") #test1
+@
+
+<<>>=
+scholarlookup("Sandrine Dudoit") #test2
+@
+(C)
+use test that function to test whether the function is correct.\\
+first, try the invalid name, and it return no errro, which means the function works for invalid scholar's name.\\
+second, try to make sure the data frame is in correct dimation with 5 columns
+<<>>=
+library(testthat)
+test_that("content of scholar is correct?",{
+  expect_error(scholardf("abc"))
+  expect_equal(dim(df_sc)[2],5)
+  })
+@
+(d)
+I found that if I choose load more page, the url will add 20 each time, so I put it into while loop.\\
+I assume that if the page is full(with 20 items), it might be another public next page, so I will continously download data for the next page until the page that contains less than 20 items.
+<<>>=
+scholardff <- function(sch_name){
+  i=0
+  url <- paste("https://scholar.google.com/citations?view_op=search_authors&mauthors=",sch_name,"&hl=en&oi=ao")
+  Sys.sleep(2)
+  if(  str_detect(sch_name, '[[:punct:]]') || str_detect(sch_name, '[[:digit:]]') ){
+  cat('invalid scholar name')}else{
+  page <- readLines(url)
+  link <- getHTMLLinks(page)
+  id <-strsplit(strsplit(link[9],split="=")[[1]][2],split="&")[[1]][1]
+  htmlpage <- gsub(" ", "", paste("https://scholar.google.com",link[9],"&cstart=",i*20,"&pagesize=20"), fixed = TRUE)
+          
+  scholar<-htmlParse(readLines(htmlpage))
+  article_content <- getNodeSet(scholar, "//td[@class = 'gsc_a_t']/a") 
+  article <- sapply(article_content, xmlValue)
+  gray_content <- getNodeSet(scholar, "//div[@class='gs_gray']")
+  a_j <- sapply(gray_content, xmlValue)
+  authors<-a_j[seq(1,length(a_j),2)]
+  journal<-a_j[seq(2,length(a_j),2)]
+  cit_content <- getNodeSet(scholar, "//td[@class = 'gsc_a_c']/a") 
+  cit <- sapply(cit_content, xmlValue)
+  year_content <- getNodeSet(scholar, "//span[@class = 'gsc_a_h']") 
+  year <- sapply(year_content, xmlValue)[-1]
+  df_sc <- data.frame(article, authors, journal, cit, year)
+  while(dim(df_sc)[1]==20*(i+1)){
+    i=i+1
+    print(i)
+    htmlpage <- gsub(" ", "", paste("https://scholar.google.com",link[9],"&cstart=",i*20,"&pagesize=20"), fixed = TRUE)
+    print(htmlpage)
+    scholar<-htmlParse(readLines(htmlpage))
+    article_content <- getNodeSet(scholar, "//td[@class = 'gsc_a_t']/a") 
+    article <- sapply(article_content, xmlValue)
+    gray_content <- getNodeSet(scholar, "//div[@class='gs_gray']")
+    a_j <- sapply(gray_content, xmlValue)
+    authors<-a_j[seq(1,length(a_j),2)]
+    journal<-a_j[seq(2,length(a_j),2)]
+    cit_content <- getNodeSet(scholar, "//td[@class = 'gsc_a_c']/a") 
+    cit <- sapply(cit_content, xmlValue)
+    year_content <- getNodeSet(scholar, "//span[@class = 'gsc_a_h']") 
+    year <- sapply(year_content, xmlValue)[-1]
+    dfn <- data.frame(article, authors, journal, cit, year)
+    df_sc<-rbind(df_sc,dfn)
+  }
+  return(df_sc)
+  }
+}
+
+df_sc1 <- scholardff("Geoffrey Hinton")
+df_sc2 <- scholardff("Sandrine Dudoit")
+summary(df_sc1)
+dim(df_sc2)
+@
+
+
+\end{document}
