@@ -18,16 +18,17 @@ I am currently using the second method. As the author mentioned, I think to keep
 For the first method, I guess that, sometimes, researcher just do some easy trails, so they do not want to waste their time to type long words to name meaningful functions or set good formats.Instead, for the convenience, they will only name their functions or variables x, y and results. 
 
 
-I believe, normally, they will use method  2, 3, 5 and 6 to track their experiment results and reduce mistakes.
-Some research
+I believe, normally, they will use method  2, 3, 5 and 6 to track their experiment results and reduce mistakes. Among these recommendations, I think 2,3, 6 are easiest to implement since they only need to install editors or change their working environment.On the other hand, 4, 9 and 10 are the most difficult part to implement as it will take longer time to ask a programmer to change their coding habits.
+
 
 
 (iv)
-I think #1, 2, 3, 6 and 9 are the general rules for both data analysis.
+I think 1, 2, 3, 6 and 9 are the general rules for both data analysis and software engineering.
 
 1, 3 and 9 are especially important for data analysis since the key concept for data analysis is to make good use of data to obtain useful information.
 The concept why to choose such method is quite important, so use recommendation 1 and 9 to write down meaningful function names and add some comment on the approach is essential. Also, people will obtain lots of variables while analysis data, so they need use recommendation 3 to record the history.
 
 For software engineering 4, 5, 7, 8, and 10 seem more for it. As software programmers usually deal with huge programs, they need to collaborate together and work on it for longer times. At such situation, how to track where is modified, when such modification made, how to debug and how to collaborate with other programmers are necessary. Also, programmers usually care about the efficiency since they have learned more about algorithms, so recommendation 8 is the rule they should keep in mind. 
+
 
 
