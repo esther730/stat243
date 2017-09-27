@@ -1,0 +1,283 @@
+\documentclass{article}
+\title {ps3}
+\author {Kehsin Su Esther 3033114294}
+
+\begin{document}
+
+\maketitle
+<<>>=
+knitr::opts_chunk$set(tidy = TRUE, cache = TRUE)
+@
+
+<<>>=
+getwd()
+setwd("C:/Users/Esther/Desktop/stat243-fall-2017-master/ps")
+getwd()
+@
+
+<<eval=FALSE>>=
+#use tm package to do text mining.
+#Set the file path to where it contains the document I want to work on.
+library(tm)
+#vignette("tm")
+cname <- file.path("C:/Users/Esther/Desktop/stat243-fall-2017-master", "ps") 
+dir(cname)
+docs <- VCorpus(DirSource(cname))   
+summary(docs) 
+inspect(docs[8])
+#tdm = as.matrix(TermDocumentMatrix(plays[[2]], control = list(wordLengths = c(1, Inf))))
+#uniqueWords = function(d) {
+  return(paste(unique(strsplit(d, " ")[[1]]), collapse = ' '))
+}
+##corpus = tm_map(plays[[2]], content_transformer(uniqueWords))
+#tdm = as.matrix(TermDocumentMatrix(corpus, control = list(wordLengths = c(1, Inf))))
+#rowSums(tdm)
+#writeLines(as.character(docs[8]))
+#findFreqTerms(mydata, 30)
+@
+
+Input the data and named it as mystring
+<<>>=
+library(readr)
+library(stringr)
+mystring <- read_file("C:/Users/Esther/Desktop/stat243-fall-2017-master/ps/pg100.txt")
+@
+Transfer different ACT and SCENE types(e.g. ACT_2|SC_7 or SCENE V)into the standard type like ACT 3. SCENE 1. \\
+Use a for loop to do it for 13 times from scene and act 15 to 1 (must use descending method! Because if we use acesending order, when the string equal to ACT II, it will first catch ACT I and transfer into ACT 1)\\
+Check after complete the replacement.
+<<>>=
+mystring_new <- mystring
+num_type <- c(15:1)
+rom_type <- as.roman(num_type)
+mystring_new <- gsub('Act ', 'ACT ',mystring_new)
+mystring_new <- gsub('ACT_', 'ACT ', mystring_new)
+mystring_new <- gsub('ACT_', 'ACT ', mystring_new)
+for (i in c( 1: length(num_type) ) ){
+  mystring_new <- gsub(paste('ACT ', rom_type[i],sep = ''), paste('ACT ', num_type[i],'.',sep = ''),mystring_new)
+  mystring_new <- gsub(paste('SCENE ', rom_type[i], sep = ''), paste('SCENE ', num_type[i], sep = ''), mystring_new)
+}
+#check
+if((gregexpr('Act ',mystring_new,FALSE)[[1]][1]==-1 ) * (gregexpr('Act_',mystring_new,FALSE)[[1]][1]==-1) ) {
+  print('Sucessfully Transfer all Act and SCENE types')
+}
+@
+Write two functions two avoid repeating codes.\\
+Function1 is intended to grep data from 1 criteria.\\
+Function2 is intended to grep data from 2 criterias.\\
+(Between two mactched strings, so checking whether the two criterias obtains same lengthes of results in necessary)
+<<>>=
+#obtain strings with a rule
+textobtain <- function(mydata, rule, ignore_st1='',ignore_st2='',case_sen= TRUE){
+  match_st <- gregexpr(rule,mydata, case_sen)
+  len=length(match_st[[1]])
+  obtains <- vector("list",len )
+  for (i in c(1:len)) {
+    obtains[i]=substr(mydata, match_st[[1]][i]+nchar(ignore_st1), match_st[[1]][i]+attr(match_st[[1]], "match.length")[i]-nchar(ignore_st2)-1)
+  }
+  return(obtains)
+}
+#obtain stirngs between two rules
+textobtain2 <- function(mydata, rule1, ignore_st1='',case_sen1= TRUE, rule2, ignore_st2='',case_sen2= TRUE,endsep='\r\n',case_sen3=TRUE){
+  match_st1 <- gregexpr(rule1,mydata, case_sen1)
+  match_st2 <- gregexpr(rule2,mydata, case_sen2)
+  len1=length(match_st1[[1]])
+  len2=length(match_st2[[1]])
+  obtains <- vector("list",len1 )
+  if (rule1==rule2){
+    for ( i in c(1:(len1-1)) ){
+      obtains[i]=substr(mydata, match_st1[[1]][i]+nchar(ignore_st1), match_st1[[1]][i+1] -1)
+    }
+    obtains[len1]=substr(mydata, match_st1[[1]][len1]+nchar(ignore_st1), gregexpr(endsep,mydata, case_sen3)[[1]][1]+nchar(endsep)-1)
+  }
+  else if(len1==len2){
+    for (i in c(1:len1)) {
+      obtains[i]=substr(mydata, match_st1[[1]][i]+nchar(ignore_st1), match_st2[[1]][i]+attr(match_st2[[1]], "match.length")[i]-nchar(ignore_st2)-1)
+      }
+  }
+  else{
+    print("Did not enter correct rules")
+  }
+  return(obtains)
+}
+textobtain3 <- function(mydata, rule,case_sen= TRUE, begin='', endsep='\r\n',case_sen3=TRUE){
+  match_st <- gregexpr(rule,mydata, case_sen)
+  len1=length(match_st[[1]])
+  obtains <- vector("list",len1 )
+   for ( i in c(1:(len1-1)) ){
+      obtains[i]=substr(mydata, match_st[[1]][i]+attr(match_st[[1]], "match.length")[i]-nchar(begin), match_st[[1]][i+1] -1)
+    }
+    obtains[len1]=substr(mydata, match_st[[1]][len1]+attr(match_st[[1]], "match.length")[i]-nchar(begin), gregexpr(endsep,mydata, case_sen3)[[1]][1]+nchar(endsep)-1)
+    return(obtains)
+}
+  
+  
+#identified how many number of acts in each play
+group_by_ind <- function(mydata, ind_pos1, ind_pos2) {
+  act_num <- vector("list",length(mydata) )
+
+  for (k in c(1: length(mydata) ) ){
+    act_num[k] <- as.numeric(substr(mydata[k],ind_pos1,ind_pos2))
+  }
+  total_act <- act_num[[length(mydata)]]
+  ind <- list(total_act, act_num)
+  return(ind)
+}
+#combined same act
+comb_act <- function(mydata, ind_pos1, ind_pos2){
+  total_act <- group_by_ind(mydata,ind_pos1, ind_pos2)[[1]]
+  act_num <- group_by_ind(mydata,ind_pos1, ind_pos2)[[2]]
+  act<- vector("list",total_act )
+  for ( x in c(1: total_act ) ){
+    for ( y in  c(1: length(mydata) ) ) {
+      if (act_num[[y]]==x){
+        act[[x]]<- paste(act[x],mydata[[y]])
+      }
+    }
+  }
+  return(act)
+}
+@
+Begin to seperate data
+(a)
+<<>>=
+#grep the plays from the mystrings
+plays <- textobtain2(mydata=mystring_new, rule1='[\r\n]+[[:digit:]]{4}[\r\n\r\n]',rule2= 'THE END', case_sen2= FALSE)
+plays <- plays[-1]
+plays<- plays[-37]
+nplays <- length(plays)
+cat("Total are ",nplays," plays") 
+@
+(b)
+<<>>=
+year <- vector("list",nplays )
+title <- vector('list', nplays)
+act_sep<- vector('list', nplays)
+num_act <- vector('list', nplays)
+act_per <- vector('list', nplays)
+sce_per <- vector('list', nplays)
+peo <-  vector('list', nplays)
+pure_peo <-  vector('list', nplays)
+peodi <-  vector('list', nplays)
+act<- vector('list', nplays)
+sum_sc <- vector('list', nplays)
+  
+for(i in c( 1: nplays ) ){
+  year[i] <- textobtain(mydata=plays[i],rule='\r\n\r\n[[:digit:]]{4}\r\n\r\n',ignore_st1='\r\n\r\n',ignore_st2='\r\n\r\n')
+  title[i] <-textobtain2(mydata=plays[i],rule1='[[:digit:]]{4}\r\n\r\n', ignore_st1 ='1234\r\n\r\n',rule2='\r\n\r\nby ',ignore_st2 ='\r\n\r\nby ')
+  title[i] <-gsub('\r','',title[i])
+  title[i] <-gsub('\n','',title[i])
+  act_sep[i] <- list( textobtain2(mydata=plays[i], rule1='ACT [[:digit:]]',case_sen1= FALSE, rule2='ACT [[:digit:]]', ignore_st2='ACT 1',case_sen2= FALSE,endsep='THE END',case_sen3=FALSE ) )
+  num_act[[i]] <- group_by_ind(act_sep[[i]], 5,5)[[1]]
+  act[i] <- list(comb_act(act_sep[[i]], 5,5)) 
+  sce_per[i] <- length(gregexpr('SCENE|Scene', plays[i], FALSE)[[1]])-1
+  sum_sc[i]<-0  
+  for (j in c(1:num_act[[i]])){
+  c_sc <- vector('list',num_act[[i]])
+  c_sc[[j]]<- length(gregexpr('SCENE|Scene', act[[i]][j], FALSE)[[1]])
+  sum_sc[[i]]<- sum_sc[[i]]+c_sc[[j]]
+  }
+   peo[i] <- list(textobtain(mydata=plays[i], rule='\r\n  [A-Z][A-Za-z ]+[.] [A-Z]', ignore_st1='\r\n  ',ignore_st2='. A',case_sen= FALSE))
+   pure_peo[i] <- length(unique(peo[[i]], TRUE))
+  peodi[i] <-list( textobtain3(mydata=plays[i], rule='\r\n  [A-Z]+[A-Za-z ]+[.] [A-Z]',case_sen= FALSE, begin='A', endsep='THE END',case_sen3=FALSE) )
+}
+
+#print out the rsult
+cat('Total act each play:', do.call("paste", c(num_act, sep = " ")))
+cat('Total scene each play:', do.call("paste", c(sce_per, sep = " ")))
+
+
+
+@
+
+(d) 
+At the beginning, check whether the number of speakers same as the number is chunk.\\
+USe a for loop to calculate how many sentence and words in each chunk.\\
+Usually, sentence are seperate by "." and words are seperate by whitespace, so we can use these two criteria to match the number of words and sentence.\\
+Then, use termFreq function to identify different words(but we need to remove all the punctuations and \r\n before calculate!)\\
+Finally, print out the result by paste them togehter.
+<<>>=
+#Allocate in advance
+num_chunk_peo <-  vector('list', nplays)
+num_chunk_dia <-  vector('list', nplays)
+num_pure_peo <-  vector('list', nplays)
+sum_sent <-  vector('list', nplays)
+sum_word <-  vector('list', nplays)
+mean_sent <-  vector('list', nplays)
+mean_word <-  vector('list', nplays)
+cl_st <- vector('list', nplays)
+unique_words <- vector('list', nplays)
+#begin to grep the chunk within each play
+for (i in 1:nplays){
+  if( length(peo[[i]]) != length(peodi[[i]]) ){
+     print('Do not get chunk correctly!')
+     }else{
+       num_chunk_peo[[i]] <- length(peo[[i]])
+       num_chunk_dia[[i]] <- length(peodi[[i]])
+      }
+  sent_per <- 0
+  word_per <- 0
+  for (j in 1:length(peodi[[i]])){
+  
+  sent_per <- sent_per+length( gregexpr('[.]', peodi[[i]][[j]], FALSE)[[1]] ) 
+  word_per <- word_per+length( gregexpr("\\W+", peodi[[i]][[j]], TRUE) [[1]] ) 
+                      }
+  sum_sent[[i]] <- sent_per
+  sum_word[[i]] <- word_per
+  mean_sent[[i]] <- round( sent_per/ length(peodi[[i]]) , 4)
+  mean_word[[i]] <- round( word_per/ length(peodi[[i]]) ,4)
+  cl_st[[i]] <- removePunctuation(plays[[i]])
+  cl_st[[i]] <- gsub('\r\n', '', cl_st[[i]])
+  unique_words[[i]]<- length(termFreq(cl_st[[i]]))
+}
+cat('Total unique speakers each play:', do.call("paste", c(pure_peo, sep = " ")))
+cat('Total chunck each play:', do.call("paste", num_chunk_dia) )
+cat('Total sentences each play:', do.call("paste", sum_sent) )
+cat('Average sentences each play:', do.call("paste", mean_sent) )
+cat('Total words each play:', do.call("paste", sum_word) )
+cat('Average words each play:', do.call("paste", mean_word) )
+cat('Total unique words each play:', do.call("paste", unique_words) )
+
+@
+
+(e)
+Step1, unlist to results to creat plots.
+Step2, view the data
+Step3, plots
+<<>>=
+yr <- unlist(year) 
+nact <- unlist(num_act)
+nsce<- unlist(sce_per)
+nchunk <- unlist(num_chunk_dia)
+nspeaker <- unlist(pure_peo)
+n_sum_sent <- unlist(sum_sent)
+n_mean_sent <- unlist(mean_sent)
+n_sum_words <- unlist(sum_word)
+n_mean_words <- unlist(mean_word)
+n_uni_words <- unlist(unique_words)
+
+df <-data.frame(yr, nact, nsce, nchunk, nspeaker, n_sum_sent, n_mean_sent, n_sum_words, n_mean_words , n_uni_words)
+#View(df)
+
+par(mfrow=c(2,2))
+plot(yr, ylim=c(0,100),nspeaker, col='black')
+points(x=yr,y=nsce, pch=16, col='blue' )
+points(x=yr, y=n_mean_words , col='red')
+points(x=yr, y=nact, pch=16 , col='green')
+plot(yr, nchunk , col='blue')
+plot(x=yr, y=n_sum_sent , col='blue')
+plot(x=yr, y= n_uni_words , col='blue')
+@
+
+%debug  
+%options(error=recover)
+3
+(a)
+The class will be the entire electric version book.
+The name will be plays, years, titles, people, dialogs and words.
+
+(b)
+The corrspoinding methods will be obtain_text, obtain_number, obtain_text, obtain_capial_letters, obtain_capital_letters and obtains_white_space.
+
+
+
+\end{document}
