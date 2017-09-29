@@ -227,7 +227,7 @@ for(i in c( 1: nplays ) ){
    peo[i] <- list(textobtain(mydata=plays[i], rule='\r\n  [A-Z][A-Za-z ]+[.] [A-Z]', ignore_st1='\r\n  ',ignore_st2='. A',case_sen= FALSE)) #obtain speakers' names
    pure_peo[i] <- length(unique(peo[[i]], TRUE)) #obtain unique speaker's name
    #at the beginning of sentence must be a speaker's name, so set it as a criteria
-  peodi[i] <-list( textobtain3(mydata=plays[i], rule='\r\n  [A-Z]+[A-Za-z ]+[.] [A-Z]',case_sen= FALSE, begin='A', endsep='THE END',case_sen3=FALSE) ) #obtain sentence within a chunk 
+  peodi[i] <-list( textobtain3(mydata=plays[i], rule='\r\n  [A-Z]+[A-Za-z ]+[.?!] [A-Z]',case_sen= FALSE, begin='A', endsep='THE END',case_sen3=FALSE) ) #obtain sentence within a chunk 
 }
 
 #print out the rsult
@@ -259,7 +259,7 @@ for (i in 1:nplays){
   word_per <- 0
   for (j in 1:length(peodi[[i]])){
   
-  sent_per <- sent_per+length( gregexpr('[.]', peodi[[i]][[j]], FALSE)[[1]] ) 
+  sent_per <- sent_per+length( gregexpr('[.?!]', peodi[[i]][[j]], FALSE)[[1]] ) 
   word_per <- word_per+length( gregexpr("\\W+", peodi[[i]][[j]], TRUE) [[1]] ) 
                       }
   sum_sent[[i]] <- sent_per
