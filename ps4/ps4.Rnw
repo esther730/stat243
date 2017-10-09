@@ -1,0 +1,379 @@
+\documentclass{article}
+%\usepackage[textwidth=18cm, centering]{geometry}
+\usepackage[paper=a4paper,dvips,top=2.5cm,left=2.0cm,right=2.0cm,foot=1cm,bottom=3.2cm]{geometry}
+%\usepackage{blindtext}
+\title {ps4}
+
+\author {Kehsin Su Esther 3033114294}
+%\textheight=550pt
+%\parindent=1pt
+ 
+\begin{document}
+ 
+\maketitle
+<<>>=
+knitr::opts_chunk$set(tidy = TRUE, cache = TRUE)
+library(pryr)
+@
+\section{Q1}
+\subsection{(a)}
+One time, when the input copy to data to run the g function.
+
+\subsection{(b)}
+As shows in the following, the memory used for calculate myFun(3) is 80022, which is nearly 2 times memory of x. It happened because the system would store data and input(x) in two different memories, SO the used the memory become twice.However, it still only copy one time.\\
+<<>>=
+mem_change(x <- 1:10000) #39.6 kB
+
+length( serialize(x, NULL) ) # 40022
+mem_change( f <- function(input){
+	data <- input
+	g <- function(param) #return(param * data) 
+	print( length( serialize(g, NULL) ) ) #459
+	return(g)
+} ) #-2.44 kB
+length( serialize(f, NULL) ) #1517
+mem_change(myFun <- f(x))  #-40.6 kB
+length( serialize(myFun, NULL) ) # 895
+mem_change(data <- 100 ) #728 B
+length( serialize(data, NULL) ) #30
+mem_change(myFun(3)) #224 B
+length( serialize(myFun(3), NULL) ) #80022
+mem_change( x <- 100 ) #-16 B
+length( serialize(x, NULL) ) #30
+mem_change(myFun(3)) #1.3 kB
+length( serialize(myFun(3), NULL) ) #80022
+@
+
+\subsection{(c)}
+Because the memory that store x is already been free. The "data" is only a local variable, so when call myFun(3), it will turn to f(x), which is also g that require data(input of function f and in the case, it was x). However, there is no x in the memory, so it return an error.\\
+
+\subsection{(d)}
+Adding force function can inside the function can force it to evaluate a function argument(data).
+Hence, the input argument will exist. There won't exist such error happened in part(c).\\
+<<>>=
+mem_change(x <- 1:1000000)
+mem_change(
+  f <- function(data){
+  #data <<- data
+  force(data)
+  g <- function(param) {
+    
+    return(param * data) 
+    }
+    
+  
+	return(g)
+})
+mem_change(myFun <- f(x))
+mem_change( rm(x) )
+mem_change( data <- 100 )
+mem_change( myFun(3) )
+@
+
+\section{Q2}
+%\subsection{(trial)}\
+<<eval=FALSE>>=
+#a
+library(data.table)
+mem_change( t <- data.table(a=c(1:500), b=c(501:1000))) 
+length(serialize( t, NULL) )
+.Internal(inspect(t))
+add1 <-address(t)
+tracemem(t)
+t[1,b :=777]
+add2 <-address(t)
+identical(add1,add2)
+length(serialize( a, NULL) )
+.Internal(inspect(t))
+#b
+mem_change( t1 <- rep(list(1:1000),500) )
+.Internal(inspect(t1))
+tracemem(t1)
+mem_change(t2<-copy(t1))
+t1[[1]][1]=11 
+.Internal(inspect(t1))
+@
+
+\subsection{(a)}
+The results are following. When modifying one element of first vecoter, the address of the second vector didn't change. What would cahnge are the address that store the two addresses of vectors and the address that store vector one.Hence,the entire list won't be copy under this change.\\
+<<>>=
+mylista <- list(c(1:10000), c(100001:200000))
+.Internal(inspect(mylista))
+mylista[[1]][[1]]<-0
+.Internal(inspect(mylista))
+@
+
+\subbction{(b)}
+From the following result, we can observe that only the memory address of modified vector has change. The other vectors didn't change. A new memory was created to store the modified vector of mylista, but the address that store other vectors of mylista and mylistb still maintain the same.
+<<>>=
+mylistb <- mylista
+#both mylista and mylistb store in the same address
+.Internal(inspect(mylista))
+.Internal(inspect(mylistb))
+#make a change in mylista
+mylista[[1]][[1]]<-99
+.Internal(inspect(mylista))
+.Internal(inspect(mylistb))
+@
+
+\subsection{(c)}
+What is actually copy is the first list of myList2. The second list of myList are still maintain in the same address and that is also the adodress of the second list of myList2. Other than the modified list, the other list in myList and myList2 still share the same address. Hence, we can conclud that when making part of change between two list that point to the same ddress, a copy will be made to the change part. The other part still maintain the same address.\\
+<<>>=
+myList <- list(list(1:10000), list(100001:200000))
+tracemem(myList)
+.Internal(inspect( myList ))
+myList2 <- myList
+#share the same memory
+.Internal(inspect( myList2 ))
+#add an element to myList
+myList2[[1]] <- append(myList2[[1]][[1]],100)
+.Internal(inspect( myList ))
+.Internal(inspect( myList2 ))
+@
+
+\subsection{(d)}
+The memory will become double when call object.size function is because x is copy 2 times when pointing both tmp[[1]] and tmp[[2]] to x. However, as they all point to the same address. In fact, it only increase one size of x, so it's about 8*1e+07 memory used as reveal in gc().\\
+<<>>=
+gc()
+tmp <- list()
+x <- rnorm(1e7)
+tmp[[1]] <- x
+tmp[[2]] <- x
+.Internal(inspect(tmp)) 
+object.size(tmp)
+gc()
+@
+
+
+\section{Q3}
+<<>>=
+#original one
+load('C:/Users/Esther/Desktop/stat243-fall-2017-master/ps/ps4prob3.Rda') # should have A, n, K
+
+a <- proc.time()
+ll <- function(Theta, A) {
+  sum.ind <- which(A==1, arr.ind=T)
+  logLik <- sum(log(Theta[sum.ind])) - sum(Theta) 
+  return(logLik)
+}
+oneUpdate <- function(A, n, K, theta.old, thresh = 0.1) {
+  theta.old1 <- theta.old
+  Theta.old <- theta.old %*% t(theta.old) 
+  L.old <- ll(Theta.old, A)
+  q <- array(0, dim = c(n, n, K))
+  
+  for (i in 1:n) {
+    for (j in 1:n) {
+      for (z in 1:K) {
+        if (theta.old[i, z]*theta.old[j, z] == 0){
+          q[i, j, z] <- 0 
+          } else {
+            q[i, j, z] <- theta.old[i, z]*theta.old[j, z] /Theta.old[i, j]
+          }
+      }
+    }
+  }
+theta.new <- theta.old 
+for (z in 1:K) {
+  theta.new[,z] <- rowSums(A*q[,,z])/sqrt(sum(A*q[,,z]))
+}
+Theta.new <- theta.new %*% t(theta.new) 
+L.new <- ll(Theta.new, A)
+converge.check <- abs(L.new - L.old) < thresh 
+theta.new <- theta.new/rowSums(theta.new) 
+return(list(theta = theta.new, loglik = L.new,converged = converge.check))
+}
+proc.time() - a  # elapsed
+
+# initialize the parameters at random starting values temp <- matrix(runif(n*K), n, K)
+temp <- matrix(runif(n*K), n, K)
+theta.init <- temp/rowSums(temp)
+
+# do single update
+b <- proc.time()
+out <- oneUpdate(A, n, K, theta.init)
+proc.time() - b  # elapsed
+# in the real code, oneUpdate was called repeatedly in a while loop
+# as part of an iterative optimization to find a maximum likelihood estimator
+@
+As show in the following result, when modified the 3 for loop into doing one time, and change the if else case into a single indicator, the running time decreased to 1/92.
+<<>>=
+#new one
+load('C:/Users/Esther/Desktop/stat243-fall-2017-master/ps/ps4prob3.Rda') # should have A, n, K
+a <- proc.time()
+
+ll <- function(Theta, A) {
+  sum.ind <- which(A==1, arr.ind=T)
+  logLik <- sum(log(Theta[sum.ind])) - sum(Theta) 
+  return(logLik)
+}
+
+oneUpdate <- function(A, n, K, theta.old, thresh = 0.1) {
+  theta.old1 <- theta.old
+  Theta.old <- theta.old %*% t(theta.old) 
+  L.old <- ll(Theta.old, A)
+  q <- array(0, dim = c(n, n, K))
+  #as the matrix will directly product each corresponding element, it's        unnecessary to do the n by n time for loop.  
+  
+      for (z in 1:K) {
+
+            #remove the repeating for loop to do it only k times
+            #reduce the if as a indicator to check zero case
+            q[, , z] <- (theta.old[, z]!=0)*theta.old[, z]*theta.old[, z] /Theta.old
+          
+      }
+
+theta.new <- theta.old 
+
+for (z in 1:K) {
+  theta.new[,z] <- rowSums(A*q[,,z])/sqrt(sum(A*q[,,z]))
+}
+Theta.new <- theta.new %*% t(theta.new) 
+L.new <- ll(Theta.new, A)
+converge.check <- abs(L.new - L.old) < thresh 
+theta.new <- theta.new/rowSums(theta.new) 
+return(list(theta = theta.new, loglik = L.new,converged = converge.check))
+}
+proc.time() - a  # elapsed
+# initialize the parameters at random starting values temp <- matrix(runif(n*K), n, K)
+temp <- matrix(runif(n*K), n, K)
+theta.init <- temp/rowSums(temp)
+
+# do single update
+b <- proc.time()
+out <- oneUpdate(A, n, K, theta.init)
+proc.time() - b  # elapsed
+# in the real code, oneUpdate was called repeatedly in a while loop
+# as part of an iterative optimization to find a maximum likelihood estimator
+@
+\section{Q4}
+
+<<>>=
+#old
+library(rbenchmark)
+library(microbenchmark)
+PIKK <- function(x, k) {
+  x[sort(runif(length(x)), index.return = TRUE)$ix[1:k]]
+}
+
+FYKD <- function(x, k) {
+  n <- length(x) 
+  for(i in 1:n) {
+    j = sample(i:n, 1) 
+    tmp <- x[i]
+    x[i] <- x[j]
+    x[j] <- tmp
+  }
+  return(x[1:k])
+}
+x<- c(1:10000)
+k=500
+#benchmark(PIKK(x,k))
+#benchmark(FYKD(x,k))
+
+@
+\subsection{(a)(b)}
+<<>>=
+#new
+library(grr)
+stime <- as.numeric(Sys.time())
+set.seed(stime)
+
+#original one but change the function sort into sort2
+PIKK0 <- function(x, k) {
+  x[ rank( sort2( runif( length(x) )) )[1:k] ]
+}
+
+
+#change the method into order to get the rank of data
+PIKK1 <- function(x, k) {
+  x[order(runif(x))[1:k]]
+}
+
+
+#change use the same method as PIKK2, but change the function from order to order2
+PIKK2 <- function(x, k) {
+  x[order2(runif(x))[1:k]]
+}
+
+#used the original function, but change the function sample to sample2 to compare the speed between two functions
+FYKD0 <- function(x, k) {
+  n <- length(x) 
+  for(i in 1:n) {
+    j = sample2(i:n, 1) 
+    tmp <- x[i]
+    x[i] <- x[j]
+    x[j] <- tmp
+  }
+  return(x[1:k])
+}
+#change the function to reduce the for loop time
+FYKD1 <- function(x, k) {
+  n <- length(x) 
+  tmp <- vector('list', k) # a list to put in selected items
+  #pick one item each time and do it k times to pick totally k items
+  for(i in 1:k) { 
+    j = sample(1:n, 1) # randomly select the postion of which item to pick
+    tmp[i] <- x[j] #put the picked item into tmp list
+     #put the last item of the sample into the position where the item has already been pick
+    x[j] <- x[n]
+    #The last item has already been copy into the selected position.
+    #We do not need to consider it when when randomly choose a position next time.
+    #The range we choose for next time will only between the n-1 items.
+    #After repeating, the range will continuously reducing, so the efficency will increase.
+    n=n-1
+  }
+  return(tmp[1:k])
+}
+#same as FYKD2, but try the sample2 function
+FYKD2 <- function(x, k) {
+  n <- length(x) 
+  tmp <- vector('list', k)
+  for(i in 1:k) {
+    j = sample2(1:n, 1) 
+    tmp[i] <- x[j]
+    x[j] <- x[n]
+    n=n-1
+  }
+  return(tmp[1:k])
+}
+x<- c(1:10000)
+k=500
+#benchmark(PIKK0(x,k))
+#benchmark(FYKD0(x,k))
+#benchmark(PIKK1(x,k))
+#benchmark(FYKD1(x,k))
+#benchmark(PIKK2(x,k))
+#benchmark(FYKD2(x,k))
+
+result <- microbenchmark( sample(1:length(x), 1), 
+                          PIKK(x,k), 
+                          PIKK0(x,k) , 
+                          PIKK1(x,k), 
+                          PIKK2(x,k), 
+                          FYKD(x,k), 
+                          FYKD0(x,k), 
+                          FYKD1(x,k), 
+                          FYKD2(x,k))
+library(ggplot2)
+autoplot(result)
+print(result)
+#by the plot, we know that PIKK2 and FYKD1 are fastest, so use them to observe how they change when n and k change
+x1<- c(1:30000)
+k1=1500
+
+result2 <- microbenchmark(PIKK2(x,k),
+                          PIKK2(x1,k),
+                          PIKK2(x,k1),
+                          PIKK2(x1,k1),
+                          FYKD1(x,k), 
+                          FYKD1(x1,k),
+                          FYKD1(x,k1),
+                          FYKD1(x1,k1)
+                          )
+autoplot(result2)
+print(result2)
+@
+As above comparsion, the running time reduced signifcantly when choose change to use order2 funciton in PIKK and reduce the for loop time in FYKD.
+From above graph, we can conclude that Whern the population or sample size increase, the running time will also increase.\\
+\end{document}
