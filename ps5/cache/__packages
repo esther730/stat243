@@ -1,0 +1,7 @@
+base
+knitr
+pryr
+data.table
+foreach
+iterators
+doParallel

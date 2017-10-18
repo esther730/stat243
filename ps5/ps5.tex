@@ -1,0 +1,390 @@
+\documentclass{article}\usepackage[]{graphicx}\usepackage[]{color}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
+\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
+\newcommand{\hlstr}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
+\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
+\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlstd}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
+\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
+\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
+\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
+\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
+\let\hlipl\hlkwb
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+%\usepackage[textwidth=18cm, centering]{geometry}
+\usepackage[paper=a4paper,dvips,top=2.5cm,left=2.0cm,right=2.0cm,foot=1cm,bottom=3.2cm]{geometry}
+%\usepackage{blindtext}
+\title {ps5}
+
+\author {Kehsin Su Esther 3033114294}
+%\textheight=550pt
+%\parindent=1pt
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+ 
+\maketitle
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{knitr}\hlopt{::}\hlstd{opts_chunk}\hlopt{$}\hlkwd{set}\hlstd{(}\hlkwc{tidy} \hlstd{=} \hlnum{TRUE}\hlstd{,} \hlkwc{cache} \hlstd{=} \hlnum{TRUE}\hlstd{)}
+\hlkwd{library}\hlstd{(pryr)}
+\end{alltt}
+
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning: package 'pryr' was built under R version 3.3.3}}\end{kframe}
+\end{knitrout}
+\section{Q1}
+(skip)
+\section{Q2}
+There are $64$ bits used to store double. Since 1 bit is used for sign and 11 bits are allocated to the exponent, there are only 52 bits for significand
+As show in the following, the approach after $2^{52}$ will become $2$ each calculation. Hence, when calculating exceed $2^{52}$, it will become overflow and lose precision. 
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{options}\hlstd{(}\hlkwc{digits} \hlstd{=} \hlnum{22}\hlstd{)}
+\hlkwd{bits}\hlstd{(}\hlnum{2}\hlopt{^}\hlnum{52} \hlopt{-} \hlnum{1}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+## [1] "01000011 00101111 11111111 11111111 11111111 11111111 11111111 11111110"
+\end{verbatim}
+\begin{alltt}
+\hlkwd{bits}\hlstd{(}\hlnum{2}\hlopt{^}\hlnum{52}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+## [1] "01000011 00110000 00000000 00000000 00000000 00000000 00000000 00000000"
+\end{verbatim}
+\begin{alltt}
+\hlkwd{bits}\hlstd{(}\hlnum{2}\hlopt{^}\hlnum{52} \hlopt{+} \hlnum{1}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+## [1] "01000011 00110000 00000000 00000000 00000000 00000000 00000000 00000001"
+\end{verbatim}
+\begin{alltt}
+\hlkwd{bits}\hlstd{(}\hlnum{2}\hlopt{^}\hlnum{53} \hlopt{-} \hlnum{1}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+## [1] "01000011 00111111 11111111 11111111 11111111 11111111 11111111 11111111"
+\end{verbatim}
+\begin{alltt}
+\hlkwd{bits}\hlstd{(}\hlnum{2}\hlopt{^}\hlnum{53}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+## [1] "01000011 01000000 00000000 00000000 00000000 00000000 00000000 00000000"
+\end{verbatim}
+\begin{alltt}
+\hlcom{# lose precision when over 2^52, and will use the closet number 2^53}
+\hlnum{2}\hlopt{^}\hlnum{53} \hlopt{+} \hlnum{1}  \hlcom{#only can approximate to 2^(53-52) precision}
+\end{alltt}
+\begin{verbatim}
+## [1] 9007199254740992
+\end{verbatim}
+\begin{alltt}
+\hlcom{# can approach precisely since it can approach with 2^1}
+\hlnum{2}\hlopt{^}\hlnum{53} \hlopt{+} \hlnum{2}  \hlcom{#can approach to 2^53+2^1 precision}
+\end{alltt}
+\begin{verbatim}
+## [1] 9007199254740994
+\end{verbatim}
+\begin{alltt}
+\hlnum{2}\hlopt{^}\hlnum{54}
+\end{alltt}
+\begin{verbatim}
+## [1] 18014398509481984
+\end{verbatim}
+\begin{alltt}
+\hlkwd{bits}\hlstd{(}\hlnum{2}\hlopt{^}\hlnum{54}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+## [1] "01000011 01010000 00000000 00000000 00000000 00000000 00000000 00000000"
+\end{verbatim}
+\begin{alltt}
+\hlnum{2}\hlopt{^}\hlnum{54} \hlopt{+} \hlnum{2}  \hlcom{#only can approximate to 2^(54-52) precision}
+\end{alltt}
+\begin{verbatim}
+## [1] 18014398509481984
+\end{verbatim}
+\begin{alltt}
+\hlkwd{bits}\hlstd{(}\hlnum{2}\hlopt{^}\hlnum{54} \hlopt{+} \hlnum{2}\hlstd{)}  \hlcom{#unable to approach precision over 2^54 within 2^2}
+\end{alltt}
+\begin{verbatim}
+## [1] "01000011 01010000 00000000 00000000 00000000 00000000 00000000 00000000"
+\end{verbatim}
+\begin{alltt}
+\hlnum{2}\hlopt{^}\hlnum{54} \hlopt{+} \hlnum{3}  \hlcom{#unable to approach precision over 2^54 within 2^2}
+\end{alltt}
+\begin{verbatim}
+## [1] 18014398509481988
+\end{verbatim}
+\begin{alltt}
+\hlkwd{bits}\hlstd{(}\hlnum{2}\hlopt{^}\hlnum{54} \hlopt{+} \hlnum{3}\hlstd{)}  \hlcom{#unable to approach precision over 2^54 within 2^2}
+\end{alltt}
+\begin{verbatim}
+## [1] "01000011 01010000 00000000 00000000 00000000 00000000 00000000 00000001"
+\end{verbatim}
+\begin{alltt}
+\hlnum{2}\hlopt{^}\hlnum{54} \hlopt{+} \hlnum{4}  \hlcom{#can approach to 2^54+2^2}
+\end{alltt}
+\begin{verbatim}
+## [1] 18014398509481988
+\end{verbatim}
+\begin{alltt}
+\hlnum{2}\hlopt{^}\hlnum{54} \hlopt{+} \hlnum{7}  \hlcom{#unable to approach precisely}
+\end{alltt}
+\begin{verbatim}
+## [1] 18014398509481992
+\end{verbatim}
+\begin{alltt}
+\hlnum{2}\hlopt{^}\hlnum{54} \hlopt{+} \hlnum{8}
+\end{alltt}
+\begin{verbatim}
+## [1] 18014398509481992
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+\section{Q3}
+\subsection{(a)}
+As show in the followng example, the time of double copy is nearly two times of integer copy. Hence, we can conclude that the running speed will increase if we use less precise numbers.\\
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{library}\hlstd{(data.table)}
+\hlstd{a} \hlkwb{<-} \hlkwd{as.integer}\hlstd{(}\hlkwd{rnorm}\hlstd{(}\hlnum{1e+06}\hlstd{,} \hlnum{2}\hlstd{,} \hlnum{10}\hlstd{))}
+\hlkwd{typeof}\hlstd{(a)}
+\end{alltt}
+\begin{verbatim}
+## [1] "integer"
+\end{verbatim}
+\begin{alltt}
+\hlstd{b} \hlkwb{<-} \hlkwd{rnorm}\hlstd{(}\hlnum{1e+06}\hlstd{,} \hlnum{2}\hlstd{,} \hlnum{10}\hlstd{)}
+\hlkwd{typeof}\hlstd{(b)}
+\end{alltt}
+\begin{verbatim}
+## [1] "double"
+\end{verbatim}
+\begin{alltt}
+\hlstd{(at} \hlkwb{<-} \hlkwd{system.time}\hlstd{(a1} \hlkwb{<-} \hlkwd{copy}\hlstd{(a)))}
+\end{alltt}
+\begin{verbatim}
+##    user  system elapsed 
+##       0       0       0
+\end{verbatim}
+\begin{alltt}
+\hlstd{(bt} \hlkwb{<-} \hlkwd{system.time}\hlstd{(b1} \hlkwb{<-} \hlkwd{copy}\hlstd{(b)))}
+\end{alltt}
+\begin{verbatim}
+##    user  system elapsed 
+##    0.03    0.00    0.03
+\end{verbatim}
+\begin{alltt}
+\hlstd{bt[}\hlnum{3}\hlstd{]}\hlopt{/}\hlstd{at[}\hlnum{3}\hlstd{]}
+\end{alltt}
+\begin{verbatim}
+## elapsed 
+##     Inf
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\subsection{(b)}
+No, as showing below, sometimes the subset time of double faster than integate, but sometimes integers are faster.\\
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{(ats} \hlkwb{<-} \hlkwd{system.time}\hlstd{(a2} \hlkwb{<-} \hlstd{a[}\hlnum{1}\hlopt{:}\hlnum{1e+06}\hlopt{/}\hlnum{2}\hlstd{]))}
+\end{alltt}
+\begin{verbatim}
+##    user  system elapsed 
+##    0.00    0.02    0.02
+\end{verbatim}
+\begin{alltt}
+\hlstd{(bts} \hlkwb{<-} \hlkwd{system.time}\hlstd{(b2} \hlkwb{<-} \hlstd{b[}\hlnum{1}\hlopt{:}\hlnum{1e+06}\hlopt{/}\hlnum{2}\hlstd{]))}
+\end{alltt}
+\begin{verbatim}
+##    user  system elapsed 
+##    0.02    0.00    0.02
+\end{verbatim}
+\begin{alltt}
+\hlstd{bts[}\hlnum{3}\hlstd{]}\hlopt{/}\hlstd{ats[}\hlnum{3}\hlstd{]}
+\end{alltt}
+\begin{verbatim}
+## elapsed 
+##       1
+\end{verbatim}
+\begin{alltt}
+\hlstd{(ats2} \hlkwb{<-} \hlkwd{system.time}\hlstd{(a2} \hlkwb{<-} \hlkwd{subset}\hlstd{(a, a} \hlopt{<} \hlnum{2}\hlstd{)))}
+\end{alltt}
+\begin{verbatim}
+##    user  system elapsed 
+##    0.02    0.01    0.03
+\end{verbatim}
+\begin{alltt}
+\hlstd{(bts2} \hlkwb{<-} \hlkwd{system.time}\hlstd{(b2} \hlkwb{<-} \hlkwd{subset}\hlstd{(b, b} \hlopt{<} \hlnum{2}\hlstd{)))}
+\end{alltt}
+\begin{verbatim}
+##    user  system elapsed 
+##    0.01    0.00    0.01
+\end{verbatim}
+\begin{alltt}
+\hlstd{bts2[}\hlnum{3}\hlstd{]}\hlopt{/}\hlstd{ats2[}\hlnum{3}\hlstd{]}
+\end{alltt}
+\begin{verbatim}
+##   elapsed 
+## 0.3333333
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+\section{Q4}
+\subsection{(a)}
+The time spend will increase when divide the column into more parts. Since when there are more parts, there will be more communication and more tasks a worker need to handle.\\
+
+\subsection{(b)}
+\subsubsection*{Approach A:}
+for each worker, they will receive n*n elements from X and $n*m$ elements from Y, so they will totally receive n*(n+m) elements. The result will be a matrix with $n*m$ elements. Hence, at a single moement, when each worker do single task, they will need to $n*n+n+m+n*m$ elements memeory space to do calcuation and store the result. They will totally communicate $p*(n*n+n+m+n*m)$ elements, which is equal to $n^{2}p+2n^{2}$\\
+
+\subsubsection*{Approach B:}
+for each worker, they will need to do p tasks. Under each task, they will receive m*n elements from X and $n*m$ elements from Y. The result for a single task will be a matrix with $m*m$ elements. When working on a single task, it will require to store $2nm+m^{2}$ elements, which conposed of the elements from X, Y and output. Since there are p workers and p tasks for each work, there will be $p^{2}*2nm+m^{2}$ elements sent to communicate, which equal to $2n^{2}p+n^{2}$.\\
+
+\subsubsection*{Conclusion:}
+As appproach B seperate matrix into more parts, each worker need to do p tasks. However, the task size each worker deal is smaller than approach A and each worker can only deal with each task in a single moment, so the memeory used for approach B in the single moment is less than approach A. However, after sum up how many elements need to communicate totally, approach B needs to communicate more elements.\\\\
+
+\begin{tabular}{|l|l|l|}
+\hline
+Approach       & A & B \\
+\hline
+\#workers      & p & p \\
+\hline
+\#tasks/worker & 1 & p \\
+\hline
+\#elements in X/task & n*n &  m*n \\
+\hline
+\#elements in Y/task & n*m &  n*m \\
+\hline
+\#elements in output/task & n*m &  m*m \\
+\hline
+elements memory used/task & n^{2}+2nm &  m^{2}+2nm \\
+\hline
+\#elements communicate totally & $n^{2}p+2n^{2} &  2n^{2}p+n^{2} \\
+\hline
+memory used/time & greater &  less \\
+\hline
+communicate & less &  greater \\
+\hline
+\end{tabular}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlcom{# trial}
+\hlkwd{require}\hlstd{(parallel)}  \hlcom{# one of the core R packages}
+\end{alltt}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Loading required package: parallel}}\begin{alltt}
+\hlkwd{require}\hlstd{(doParallel)}
+\end{alltt}
+
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Loading required package: doParallel}}
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning: package 'doParallel' was built under R version 3.3.3}}
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Loading required package: foreach}}
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning: package 'foreach' was built under R version 3.3.3}}
+
+{\ttfamily\noindent\itshape\color{messagecolor}{\#\# Loading required package: iterators}}
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning: package 'iterators' was built under R version 3.3.3}}\begin{alltt}
+\hlkwd{library}\hlstd{(foreach)}
+\hlstd{cores} \hlkwb{<-} \hlkwd{detectCores}\hlstd{(}\hlkwc{logical} \hlstd{= F)}
+\hlstd{cl} \hlkwb{<-} \hlkwd{makeCluster}\hlstd{(cores)}
+\hlkwd{registerDoParallel}\hlstd{(cl,} \hlkwc{cores} \hlstd{= cores)}
+\hlcom{# split data by ourselves}
+\hlstd{test_mat1} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlkwd{rnorm}\hlstd{(}\hlnum{300} \hlopt{*} \hlnum{300}\hlstd{,} \hlnum{3}\hlstd{,} \hlnum{3}\hlstd{),} \hlnum{300}\hlstd{,} \hlnum{300}\hlstd{)}
+\hlstd{test_mat2} \hlkwb{<-} \hlkwd{matrix}\hlstd{(}\hlkwd{rnorm}\hlstd{(}\hlnum{300} \hlopt{*} \hlnum{300}\hlstd{,} \hlnum{3}\hlstd{,} \hlnum{3}\hlstd{),} \hlnum{300}\hlstd{,} \hlnum{300}\hlstd{)}
+\hlstd{chunk.size} \hlkwb{<-} \hlkwd{ncol}\hlstd{(test_mat1)}\hlopt{/}\hlstd{cores}
+
+\hlkwd{system.time}\hlstd{(result1} \hlkwb{<-} \hlkwd{foreach}\hlstd{(}\hlkwc{i} \hlstd{=} \hlnum{1}\hlopt{:}\hlstd{cores,} \hlkwc{.packages} \hlstd{=} \hlstr{"pryr"}\hlstd{)} \hlopt{%dopar%} \hlstd{\{}
+    \hlstd{test_mat1} \hlopt{%*%} \hlstd{test_mat2[, (}\hlnum{1} \hlopt{+} \hlstd{chunk.size} \hlopt{*} \hlstd{(cores} \hlopt{-} \hlnum{1}\hlstd{))}\hlopt{:}\hlstd{(chunk.size} \hlopt{*} \hlstd{cores)]}
+\hlstd{\})}
+\end{alltt}
+\begin{verbatim}
+##    user  system elapsed 
+##    0.04    0.00    0.26
+\end{verbatim}
+\begin{alltt}
+\hlkwd{system.time}\hlstd{(result2} \hlkwb{<-} \hlkwd{foreach}\hlstd{(}\hlkwc{i} \hlstd{=} \hlnum{1}\hlopt{:}\hlnum{300}\hlstd{,} \hlkwc{.packages} \hlstd{=} \hlstr{"pryr"}\hlstd{)} \hlopt{%dopar%} \hlstd{\{}
+    \hlstd{test_mat1} \hlopt{%*%} \hlstd{test_mat2[, i]}
+\hlstd{\})}
+\end{alltt}
+\begin{verbatim}
+##    user  system elapsed 
+##    0.14    0.00    0.16
+\end{verbatim}
+\begin{alltt}
+\hlkwd{system.time}\hlstd{(result3} \hlkwb{<-} \hlkwd{foreach}\hlstd{(}\hlkwc{test_mat2} \hlstd{=} \hlkwd{iter}\hlstd{(test_mat2,} \hlkwc{by} \hlstd{=} \hlstr{"col"}\hlstd{),} \hlkwc{.combine} \hlstd{= cbind)} \hlopt{%dopar%}
+    \hlstd{(test_mat1} \hlopt{%*%} \hlstd{test_mat2))}
+\end{alltt}
+\begin{verbatim}
+##    user  system elapsed 
+##    0.09    0.02    0.14
+\end{verbatim}
+\begin{alltt}
+\hlkwd{system.time}\hlstd{(result4} \hlkwb{<-} \hlkwd{foreach}\hlstd{(}\hlkwc{test_mat1} \hlstd{=} \hlkwd{iter}\hlstd{(test_mat1,} \hlkwc{by} \hlstd{=} \hlstr{"row"}\hlstd{),} \hlkwc{test_mat2} \hlstd{=} \hlkwd{iter}\hlstd{(test_mat2,}
+    \hlkwc{by} \hlstd{=} \hlstr{"col"}\hlstd{),} \hlkwc{.combine} \hlstd{= cbind)} \hlopt{%dopar%} \hlstd{(test_mat1} \hlopt{%*%} \hlstd{test_mat2))}
+\end{alltt}
+\begin{verbatim}
+##    user  system elapsed 
+##    0.14    0.00    0.14
+\end{verbatim}
+\begin{alltt}
+\hlkwd{stopImplicitCluster}\hlstd{()}
+\hlkwd{stopCluster}\hlstd{(cl)}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+\section{Q5}
+Since the number system we use is 10, which composed of 2 and 5.
+Hence, only numbers contains of 2 and 5 can be finited represented. Also, the unit runoff equal to half of the machine epsilon, which has an upper bound on rounding that equal to $\frac{1}{2}$ b^{1-p}$ .Hence, the multiples of 5 can be precised reveal in the system. 
+
+
+\end{document}

@@ -1,0 +1,150 @@
+\documentclass{article}
+%\usepackage[textwidth=18cm, centering]{geometry}
+\usepackage[paper=a4paper,dvips,top=2.5cm,left=2.0cm,right=2.0cm,foot=1cm,bottom=3.2cm]{geometry}
+%\usepackage{blindtext}
+\title {ps5}
+
+\author {Kehsin Su Esther 3033114294}
+%\textheight=550pt
+%\parindent=1pt
+ 
+\begin{document}
+ 
+\maketitle
+<<>>=
+knitr::opts_chunk$set(tidy = TRUE, cache = TRUE)
+library(pryr)
+@
+\section{Q1}
+(skip)
+\section{Q2}
+There are $64$ bits used to store double. Since 1 bit is used for sign and 11 bits are allocated to the exponent, there are only 52 bits for significand
+As show in the following, the approach after $2^{52}$ will become $2$ each calculation. Hence, when calculating exceed $2^{52}$, it will become overflow and lose precision. 
+<<>>=
+options(digits=22)
+bits(2^52-1)
+bits(2^52)
+bits(2^52+1)
+bits(2^53-1)
+bits(2^53)
+#lose precision when over 2^52, and will use the closet number 2^53
+2^53+1 #only can approximate to 2^(53-52) precision
+#can approach precisely since it can approach with 2^1
+2^53+2 #can approach to 2^53+2^1 precision
+2^54
+bits(2^54)
+2^54+2  #only can approximate to 2^(54-52) precision
+bits(2^54+2)  #unable to approach precision over 2^54 within 2^2
+2^54+3  #unable to approach precision over 2^54 within 2^2
+bits(2^54+3)  #unable to approach precision over 2^54 within 2^2
+2^54+4  #can approach to 2^54+2^2
+2^54+7  #unable to approach precisely
+2^54+8
+
+@
+\section{Q3}
+\subsection{(a)}
+As show in the followng example, the time of double copy is nearly two times of integer copy. Hence, we can conclude that the running speed will increase if we use less precise numbers.\\
+<<>>=
+library(data.table)
+a <- as.integer(rnorm(1e6,2,10))
+typeof(a)
+b <- rnorm(1e6,2,10)
+typeof(b)
+(at <- system.time(a1 <-  copy(a) ) )
+(bt <- system.time(b1  <- copy(b) ) )
+bt[3]/at[3]
+@
+
+\subsection{(b)}
+No, as showing below, sometimes the subset time of double faster than integate, but sometimes integers are faster.\\
+<<>>=
+(ats <- system.time(a2 <-  a[1:1e6/2] ) )
+(bts <- system.time(b2  <- b[1:1e6/2] ) )
+bts[3]/ats[3]
+(ats2 <- system.time(a2 <-  subset(a,a<2 ) ) )
+(bts2 <- system.time(b2  <- subset(b,b<2 ) ) )
+bts2[3]/ats2[3]
+@
+
+\section{Q4}
+\subsection{(a)}
+The time spend will increase when divide the column into more parts. Since when there are more parts, there will be more communication and more tasks a worker need to handle.\\
+
+\subsection{(b)}
+\subsubsection*{Approach A:}
+for each worker, they will receive n*n elements from X and $n*m$ elements from Y, so they will totally receive n*(n+m) elements. The result will be a matrix with $n*m$ elements. Hence, at a single moement, when each worker do single task, they will need to $n*n+n+m+n*m$ elements memeory space to do calcuation and store the result. They will totally communicate $p*(n*n+n+m+n*m)$ elements, which is equal to $n^{2}p+2n^{2}$\\
+
+\subsubsection*{Approach B:}
+for each worker, they will need to do p tasks. Under each task, they will receive m*n elements from X and $n*m$ elements from Y. The result for a single task will be a matrix with $m*m$ elements. When working on a single task, it will require to store $2nm+m^{2}$ elements, which conposed of the elements from X, Y and output. Since there are p workers and p tasks for each work, there will be $p^{2}*2nm+m^{2}$ elements sent to communicate, which equal to $2n^{2}p+n^{2}$.\\
+
+\subsubsection*{Conclusion:}
+As appproach B seperate matrix into more parts, each worker need to do p tasks. However, the task size each worker deal is smaller than approach A and each worker can only deal with each task in a single moment, so the memeory used for approach B in the single moment is less than approach A. However, after sum up how many elements need to communicate totally, approach B needs to communicate more elements.\\\\
+
+\begin{tabular}{|l|l|l|}
+\hline
+Approach       & A & B \\
+\hline
+\#workers      & p & p \\
+\hline
+\#tasks/worker & 1 & p \\
+\hline
+\#elements in X/task & n*n &  m*n \\
+\hline
+\#elements in Y/task & n*m &  n*m \\
+\hline
+\#elements in output/task & n*m &  m*m \\
+\hline
+elements memory used/task & n^{2}+2nm &  m^{2}+2nm \\
+\hline
+\#elements communicate totally & $n^{2}p+2n^{2} &  2n^{2}p+n^{2} \\
+\hline
+memory used/time & greater &  less \\
+\hline
+communicate & less &  greater \\
+\hline
+\end{tabular}
+<<>>=
+#trial
+require(parallel) # one of the core R packages
+require(doParallel)
+library(foreach)
+cores <- detectCores(logical=F)
+cl <- makeCluster(cores)
+registerDoParallel(cl, cores=cores)
+# split data by ourselves
+test_mat1 <- matrix(rnorm(300*300,3,3),300,300)
+test_mat2 <- matrix(rnorm(300*300,3,3),300,300)
+chunk.size <-  ncol(test_mat1)/cores
+
+system.time(result1 <- foreach(i = 1:cores, .packages = 'pryr') %dopar% {
+    test_mat1%*%test_mat2[,(1+chunk.size*(cores-1)):(chunk.size*cores)]
+}
+)
+
+system.time(result2 <- foreach(i = 1:300, .packages = 'pryr') %dopar% {
+   test_mat1%*%test_mat2[,i]
+}
+)
+
+system.time(
+  result3 <- foreach( test_mat2=iter( test_mat2, by='col'), .combine=cbind) %dopar%
+( test_mat1 %*%  test_mat2)
+)
+
+system.time(
+  result4 <- foreach( test_mat1=iter( test_mat1, by='row'),test_mat2=iter( test_mat2, by='col'),.combine=cbind) %dopar%
+( test_mat1 %*%  test_mat2)
+)
+
+stopImplicitCluster()
+stopCluster(cl)
+
+@
+
+\section{Q5}
+Since the number system we use is 10, which composed of 2 and 5.
+Hence, only numbers contains of 2 and 5 can be finited represented. Also, the unit runoff equal to half of the machine epsilon, which has an upper bound on rounding that equal to $\frac{1}{2}$ b^{1-p}$ .Hence, the multiples of 5 can be precised reveal in the system. 
+
+
+\end{document}
