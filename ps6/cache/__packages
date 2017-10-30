@@ -1,0 +1,7 @@
+base
+knitr
+pryr
+RSQLite
+dplyr
+chron
+bindrcpp

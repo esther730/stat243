@@ -1,0 +1,311 @@
+\documentclass{article}
+%\usepackage[textwidth=18cm, centering]{geometry}
+\usepackage[paper=a4paper,dvips,top=2.5cm,left=2.0cm,right=2.0cm,foot=1cm,bottom=3.2cm]{geometry}
+%\usepackage{blindtext}
+\title {ps6}
+
+\author {Kehsin Su Esther 3033114294}
+%\textheight=550pt
+%\parindent=1pt
+ 
+\begin{document}
+ 
+\maketitle
+<<>>=
+knitr::opts_chunk$set(tidy = TRUE, cache = TRUE)
+library(pryr)
+@
+\section{Q1}
+(Brief summary)\\
+
+The goal of the simulation is to test the components of normal mixture distribution. They use fisher information matrices to assess their method. The way they approach called minium information ratio estimation and validation, which is based on the ratio of fisher information matrices that build with unknown to known.\\
+
+The author has choosen EM algorithm to use maximum likelihood method to obtain 100 sets of parameters. The sample were generated from standard normal distribution. Those values and sample sizes that used to generate null sample may impact the result. Maybe the author should consider more about difference variance of the two components(not sure)\\
+
+The table reveals enough information for the test results. For table 1, personally, I would recommend transfer the row into columns and combine the result of inadjusted test and adjusted test to compare the result more intutive. I would even calcuate the difference of powers.\\
+
+The results makes more sense when sample size increase and D value decrease.\\
+
+In my view, more simulation would be more powerful for the hyopetheis.\\
+
+\section{Q2}
+<<>>=
+## @knitr database-access
+
+library(RSQLite)
+drv <- dbDriver("SQLite")
+# relative or absolute path to where the .db file is
+dir <- 'C:/Users/Esther/Desktop/stat243-fall-2017-master/section/s07' 
+dbFilename <- 'stackoverflow-2016.db'
+db <- dbConnect(drv, dbname = file.path(dir, dbFilename))
+
+## @knitr database-tables
+dbListTables(db)
+dbListFields(db, "questions")
+dbListFields(db, "users")
+dbListFields(db, "questions_tags")
+# simple query to get 5 rows from a table
+dbGetQuery(db, "select * from questions limit 5")  
+dbGetQuery(db, "select * from users limit 5") 
+dbGetQuery(db, "select * from questions_tags limit 5")
+
+rresult <- dbGetQuery(db, "select distinct userid from
+          questions Q
+          join questions_tags T on Q.questionid = T.questionid
+          join users U on Q.ownerid = U.userid
+          where tag = 'r' or tag = 'python'
+          except 
+          select distinct userid from
+          questions Q
+          join questions_tags T on Q.questionid = T.questionid
+          join users U on Q.ownerid = U.userid
+          where tag = 'python'
+          ")
+nrow(rresult)
+@
+
+\section{Q3}
+The following codes are refer from chapter 8.
+<<eval=FALSE,engine='python'>>=
+#from pyspark import SparkFiles
+dir = '/global/scratch/paciorek/wikistats_full'
+#dir=$HOME
+#lines = sc.textFile(dir+'/'+ 'newdir') 
+lines = sc.textFile(dir + '/' + 'dated') 
+
+lines.getNumPartitions()  # 16590 (480 input files) for full dataset
+
+# note delayed evaluation
+lines.count() 
+testLines = lines.take(10)
+testLines[0]
+testLines[9]
+
+### filter to sites of interest ###
+
+import re
+from operator import add
+
+def find(line, regex = "Disney", language = None):
+    vals = line.split(' ')
+    if len(vals) < 6:
+        return(False)
+    tmp = re.search(regex, vals[3])
+    if tmp is None or (language != None and vals[2] != language):
+        return(False)
+    else:
+        return(True)
+
+lines.filter(find).take(100) # pretty quick
+    
+# not clear if should repartition; will likely have small partitions if not
+obama = lines.filter(find).repartition(480) # ~ 18 minutes for full dataset (but remember lazy evaluation) 
+obama.count()  # 433k observations for full dataset
+mydir = '/global/scratch/esther730' 
+outputDir = mydir+'/' + 'Dinsney-counts'
+obama.saveAsTextFile(outputDir)
+## @knitr map-reduce
+
+### map-reduce step to sum hits across date-time-language triplets ###
+    
+def stratify(line):
+    # create key-value pairs where:
+    #   key = date-time-language
+    #   value = number of website hits
+    vals = line.split(' ')
+    return(vals[0] + '-' + vals[1] + '-' + vals[2], int(vals[4]))
+
+# sum number of hits for each date-time-language value
+counts = obama.map(stratify).reduceByKey(add)  # 5 minutes
+# 128889 for full dataset
+
+### map step to prepare output ###
+
+def transform(vals):
+    # split key info back into separate fields
+    key = vals[0].split('-')
+    return(",".join((key[0], key[1], key[2], str(vals[1]))))
+
+### output to file ###
+
+# have one partition because one file per partition is written out
+mydir = '/global/scratch/esther730' 
+outputDir = mydir+'/' + 'Dinsney-counts¢±'
+counts.map(transform).repartition(1).saveAsTextFile(outputDir)
+@
+After above action, I got Disney data from the wikipages.
+<<eval=FALSE, engine='bash'>>=
+#copy the data from savio and rename it as disney_data
+scp esther730@dtn.brc.berkeley.edu://global/scratch/esther730/Dinsney-counts2/part-00000   /mnt/c/Users/Esther/Desktop/stat243-fall-2017-master/section/s07/disney_data
+@
+
+As showing in the plot, the highest hits appears three days before the Chirsmas.
+<<>>=
+#Note: refer from chatper 8 obama_plot.R
+library(dplyr)
+library(chron)
+
+setwd('C:/Users/Esther/Desktop/stat243-fall-2017-master/section/s07')
+dat <- read.table('disney_data',sep=',')
+
+names(dat) <- c('date','time','lang','hits')
+dat$date <- as.character(dat$date)
+dat$time <- as.character(dat$time)
+dat$time[dat$time %in%  c("0", "1")] <- "000000"
+wh <- which(nchar(dat$time) == 5)
+dat$time[wh] <- paste0("0", dat$time[wh])
+dat$chron <- chron(dat$date, dat$time,
+                  format = c(dates = 'ymd', times = "hms"))
+dat$chron <- dat$chron - 5/24 # GMT -> EST
+
+dat <- dat %>% filter(dat$lang == 'en')
+#collect data between Chismas period in 2008.
+#Bedtime Stories release in December 25, 2008.
+sub <- dat %>% filter(dat$date < 20081231 & dat$date > 20081220)
+#pdf('disney-traffic.pdf', width = 5, height = 5)
+#par(mfrow = c(2, 1), mgp = c(1.8, 0.7, 0), mai = c(0.6, 0.6, 0.1, 0.1))
+#plot(dat$chron, dat$hits, type = 'l', xlab = 'time', ylab = 'hits')
+plot(sub$chron, sub$hits, type = 'l', xlab = 'time', ylab = 'hits')
+points(sub$chron, sub$hits)
+#dev.off()
+@
+
+\section{Q4}
+\subsection{(a)}
+<<eval=FALSE, engine='savio'>>=
+library(foreach)
+require(parallel) 
+require(doParallel)
+nCores <- as.integer(Sys.getenv("SLURM_CPUS_ON_NODE"))
+registerDoParallel(nCores)
+library(stringr)
+library(readr)
+
+#Note: The single function and usuage of str_pad are refer from my classmate, Ming Qiu.
+single <- function(filename){
+  data <- readLines(filename)
+  library(stringr)
+  out <- data[str_detect(data,'Barack_Obama')]
+  return(out) }
+
+
+n <- 960
+#nsub <- 10
+result <- foreach(
+  i = 1:n,
+  .packages = c("stringr"), 
+  .combine = c,              
+  .verbose = TRUE) %dopar% {     
+    filename <- paste("/global/scratch/paciorek/wikistats_full/dated_for_R/part-", str_pad(i-1, width=5, side="left", pad="0"),sep = "")
+     #filename <- paste("C:/Users/Esther/Desktop/stat243-fall-2017-master/part-",str_pad(i-1, width=5, side="left", pad="0"),sep = "")
+    outputs <- single(filename)
+    #outputs
+  }
+
+results <- data.frame (matrix(sapply(list(result),function(x) unlist(strsplit(x,split=" ") ) ), ncol=6, byrow = TRUE) )
+#results <- data.frame ( t(sapply(result,function(x) unlist(strsplit(x,split=" ")) ) ))
+colnames(results) <- c("date", "time", "language", "webpage", "number of hits", "page size")
+head(results)
+class(results)
+print(dim(results))
+proc.time()
+
+@
+Part of output file is following:
+<<>>=
+dic <- "C:/Users/Esther/Desktop/stat243-fall-2017-master/section/s07/ps6q4no.out"
+output <- readLines(dic)
+tail(output,25)
+@
+\subsection{(b)}
+As the time is 2715 seconds(46 minutes) for one node, which vert close to 12 minutes if divide it my 4. Hence, using R for each has almost similar times or even faster.\\
+
+\subsection{(c)}
+<<eval=FALSE, engine='savio'>>=
+#statistic allicate
+library(foreach)
+require(parallel) 
+require(doParallel)
+nCores <- as.integer(Sys.getenv("SLURM_CPUS_ON_NODE"))
+registerDoParallel(nCores)
+library(stringr)
+
+#Note: The single function and usuage of str_pad are refer from my classmate, Ming Qiu.
+single <- function(filename){
+  data <- readLines(filename)
+  library(stringr)
+  out <- data[str_detect(data,'Barack_Obama')]
+  return(out) }
+
+n <- 960
+#n <- 2
+path <- "/global/scratch/paciorek/wikistats_full/dated_for_R/part-"
+#path <- "C:/Users/Esther/Desktop/stat243-fall-2017-master/part-"
+i=1:n
+filename <- mclapply(n,  mc.preschedule=TRUE, function(x) paste(path,str_pad(i-1, width=5, side="left", pad="0"),sep = "")   )
+output <- mclapply(filename[[1]], single,  mc.preschedule=TRUE)
+results <- data.frame( matrix(sapply( unlist( output ), function(x) unlist(strsplit(x,split=" ") )), ncol=6, byrow = TRUE) )
+
+colnames(results) <- c("date", "time", "language", "webpage", "number of hits", "page size")
+head(results)
+class(results)
+print(dim(results))
+proc.time()
+write.table(results, file='/global/scratch/esther730/results_ob.csv',sep = ",",row.names = FALSE)
+@
+The following output reveal the processing time of static allocate, which is 17198 that nearly 289 minutes, when running at 4 cores, it will cost nearly 71 minutes.
+<<>>=
+dic <- "C:/Users/Esther/Desktop/stat243-fall-2017-master/section/s07/ps6q4st.out"
+output <- readLines(dic)
+tail(output,25)
+@
+
+<<eval=FALSE, engine='savio'>>=
+#dynamic allocate
+library(foreach)
+require(parallel) 
+require(doParallel)
+nCores <- as.integer(Sys.getenv("SLURM_CPUS_ON_NODE"))
+registerDoParallel(nCores)
+library(stringr)
+
+
+single <- function(filename){
+  data <- readLines(filename)
+  library(stringr)
+  out <- data[str_detect(data,'Barack_Obama')]
+  return(out) }
+
+
+n <- 960
+#nsub <- 10
+result <- foreach(
+  i = 1:n,
+  .packages = c("stringr"), 
+  .combine = c,              
+  .verbose = TRUE) %dopar% {     
+    filename <- paste("/global/scratch/paciorek/wikistats_full/dated_for_R/part-", str_pad(i-1, width=5, side="left", pad="0"),sep = "")
+    outputs <- mclapply(filename,single, mc.preschedule=FALSE)
+    #outputs
+  }
+results <- data.frame (matrix(sapply(list(result),function(x) unlist(strsplit(x,split=" ") ) ), ncol=6, byrow = TRUE) )
+#results <- data.frame ( t(sapply(result,function(x) unlist(strsplit(x,split=" ")) ) ))
+colnames(results) <- c("date", "time", "language", "webpage", "number of hits", "page size")
+head(results)
+class(results)
+print(dim(results))
+proc.time()
+@
+
+The dynamic allocate used 22585 seconds(377minutes) to grep the strings among 960 files. When running on four nodes, it will cost about 94 minutes to obtain the results.
+<<>>=
+dic <- "C:/Users/Esther/Desktop/stat243-fall-2017-master/section/s07/ps6q4dy.out"
+output <- readLines(dic)
+tail(output,25)
+@
+Hence, generally, static allocation is better method than dynamic way in this case.
+
+\section{Q5}
+(attach as hand written version)
+
+\end{document}

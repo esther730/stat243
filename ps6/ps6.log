@@ -1,0 +1,476 @@
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6350 64-bit) (preloaded format=pdflatex 2017.9.4)  29 OCT 2017 23:19
+entering extended mode
+**./ps6.tex
+(ps6.tex
+LaTeX2e <2017-04-15>
+Babel <3.10> and hyphenation patterns for 75 language(s) loaded.
+("C:\Program Files\MiKTeX 2.9\tex\latex\base\article.cls"
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+("C:\Program Files\MiKTeX 2.9\tex\latex\base\size10.clo"
+File: size10.clo 2014/09/29 v1.4h Standard LaTeX file (size option)
+)
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics\graphicx.sty"
+Package: graphicx 2014/10/28 v1.0g Enhanced LaTeX Graphics (DPC,SPQR)
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics\keyval.sty"
+Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
+\KV@toks@=\toks14
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics\graphics.sty"
+Package: graphics 2017/04/14 v1.1b Standard LaTeX Graphics (DPC,SPQR)
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics\trig.sty"
+Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics-cfg\graphics.cfg"
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+)
+Package graphics Info: Driver file: pdftex.def on input line 99.
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics-def\pdftex.def"
+File: pdftex.def 2017/01/12 v0.06k Graphics/color for pdfTeX
+
+("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\infwarerr.sty"
+Package: infwarerr 2016/05/16 v1.4 Providing info/warning/error messages (HO)
+)
+("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\ltxcmds.sty"
+Package: ltxcmds 2016/05/16 v1.23 LaTeX kernel commands for general use (HO)
+)
+\Gread@gobject=\count87
+))
+\Gin@req@height=\dimen103
+\Gin@req@width=\dimen104
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics\color.sty"
+Package: color 2016/07/10 v1.1e Standard LaTeX Color (DPC)
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics-cfg\color.cfg"
+File: color.cfg 2016/01/02 v1.6 sample color configuration
+)
+Package color Info: Driver file: pdftex.def on input line 147.
+) (framed.sty
+Package: framed 2011/10/22 v 0.96: framed or shaded text with page breaks
+\OuterFrameSep=\skip43
+\fb@frw=\dimen105
+\fb@frh=\dimen106
+\FrameRule=\dimen107
+\FrameSep=\dimen108
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\base\alltt.sty"
+Package: alltt 1997/06/16 v2.0g defines alltt environment
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\geometry\geometry.sty"
+Package: geometry 2010/09/12 v5.6 Page Geometry
+
+("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\ifpdf.sty"
+Package: ifpdf 2017/03/15 v3.2 Provides the ifpdf switch
+)
+("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\ifvtex.sty"
+Package: ifvtex 2016/05/16 v1.6 Detect VTeX and its facilities (HO)
+Package ifvtex Info: VTeX not detected.
+)
+("C:\Program Files\MiKTeX 2.9\tex\generic\ifxetex\ifxetex.sty"
+Package: ifxetex 2010/09/12 v0.6 Provides ifxetex conditional
+)
+\Gm@cnth=\count88
+\Gm@cntv=\count89
+\c@Gm@tempcnt=\count90
+\Gm@bindingoffset=\dimen109
+\Gm@wd@mp=\dimen110
+\Gm@odd@mp=\dimen111
+\Gm@even@mp=\dimen112
+\Gm@layoutwidth=\dimen113
+\Gm@layoutheight=\dimen114
+\Gm@layouthoffset=\dimen115
+\Gm@layoutvoffset=\dimen116
+\Gm@dimlist=\toks15
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\geometry\geometry.cfg"))
+("C:\Program Files\MiKTeX 2.9\tex\latex\upquote\upquote.sty"
+Package: upquote 2012/04/19 v1.3 upright-quote and grave-accent glyphs in verba
+tim
+) (ps6.aux)
+\openout1 = `ps6.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 61.
+LaTeX Font Info:    ... okay on input line 61.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 61.
+LaTeX Font Info:    ... okay on input line 61.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 61.
+LaTeX Font Info:    ... okay on input line 61.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 61.
+LaTeX Font Info:    ... okay on input line 61.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 61.
+LaTeX Font Info:    ... okay on input line 61.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 61.
+LaTeX Font Info:    ... okay on input line 61.
+
+("C:\Program Files\MiKTeX 2.9\tex\context\base\supp-pdf.mkii"
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count91
+\scratchdimen=\dimen117
+\scratchbox=\box26
+\nofMPsegments=\count92
+\nofMParguments=\count93
+\everyMPshowfont=\toks16
+\MPscratchCnt=\count94
+\MPscratchDim=\dimen118
+\MPnumerator=\count95
+\makeMPintoPDFobject=\count96
+\everyMPtoPDFconversion=\toks17
+) ("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\pdftexcmds.sty"
+Package: pdftexcmds 2017/03/19 v0.25 Utility functions of pdfTeX for LuaTeX (HO
+)
+
+("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\ifluatex.sty"
+Package: ifluatex 2016/05/16 v1.4 Provides the ifluatex switch (HO)
+Package ifluatex Info: LuaTeX not detected.
+)
+Package pdftexcmds Info: LuaTeX not detected.
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+Package pdftexcmds Info: \pdfdraftmode found.
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\oberdiek\epstopdf-base.sty"
+Package: epstopdf-base 2016/05/15 v2.6 Base part for package epstopdf
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\oberdiek\grfext.sty"
+Package: grfext 2016/05/16 v1.2 Manage graphics extensions (HO)
+
+("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\kvdefinekeys.sty"
+Package: kvdefinekeys 2016/05/16 v1.4 Define keys (HO)
+))
+("C:\Program Files\MiKTeX 2.9\tex\latex\oberdiek\kvoptions.sty"
+Package: kvoptions 2016/05/16 v3.12 Key value format for package options (HO)
+
+("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\kvsetkeys.sty"
+Package: kvsetkeys 2016/05/16 v1.17 Key value parser (HO)
+
+("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\etexcmds.sty"
+Package: etexcmds 2016/05/16 v1.6 Avoid name clashes with e-TeX commands (HO)
+Package etexcmds Info: Could not find \expanded.
+(etexcmds)             That can mean that you are not using pdfTeX 1.50 or
+(etexcmds)             that some package has redefined \expanded.
+(etexcmds)             In the latter case, load this package earlier.
+)))
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
+38.
+Package grfext Info: Graphics extension search list:
+(grfext)             [.png,.pdf,.jpg,.mps,.jpeg,.jbig2,.jb2,.PNG,.PDF,.JPG,.JPE
+G,.JBIG2,.JB2,.eps]
+(grfext)             \AppendGraphicsExtensions on input line 456.
+)
+*geometry* detected driver: dvips
+*geometry* verbose mode - [ preamble ] result:
+* driver: dvips
+* paper: a4paper
+* layout: <same size as paper>
+* layoutoffset:(h,v)=(0.0pt,0.0pt)
+* modes: 
+* h-part:(L,W,R)=(56.9055pt, 483.69687pt, 56.9055pt)
+* v-part:(T,H,B)=(71.13188pt, 682.86624pt, 91.04872pt)
+* \paperwidth=597.50787pt
+* \paperheight=845.04684pt
+* \textwidth=483.69687pt
+* \textheight=682.86624pt
+* \oddsidemargin=-15.36449pt
+* \evensidemargin=-15.36449pt
+* \topmargin=-38.1381pt
+* \headheight=12.0pt
+* \headsep=25.0pt
+* \topskip=10.0pt
+* \footskip=28.45274pt
+* \marginparwidth=65.0pt
+* \marginparsep=11.0pt
+* \columnsep=10.0pt
+* \skip\footins=9.0pt plus 4.0pt minus 2.0pt
+* \hoffset=0.0pt
+* \voffset=0.0pt
+* \mag=1000
+* \@twocolumnfalse
+* \@twosidefalse
+* \@mparswitchfalse
+* \@reversemarginfalse
+* (1in=72.27pt=25.4mm, 1cm=28.453pt)
+
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <12> on input line 63.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <8> on input line 63.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <6> on input line 63.
+Package color Info: Redefining color shadecolor on input line 65.
+LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <10> not available
+(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 67.
+
+Underfull \hbox (badness 10000) in paragraph at lines 75--76
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 77--78
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 79--80
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 81--82
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 83--84
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 85--86
+
+ []
+
+Package color Info: Redefining color shadecolor on input line 89.
+[1
+Non-PDF special ignored!
+
+{C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map}]
+[2]
+Package color Info: Redefining color shadecolor on input line 214.
+
+Overfull \hbox (72.79828pt too wide) in paragraph at lines 248--248
+[]\OT1/cmtt/m/n/10 obama = lines.filter(find).repartition(480) # ~ 18 minutes f
+or full dataset (but remember lazy evaluation)[] 
+ []
+
+Missing character: There is no ¢ in font cmtt10!
+Missing character: There is no ± in font cmtt10!
+[3]
+Package color Info: Redefining color shadecolor on input line 286.
+
+Overfull \hbox (393.04549pt too wide) in paragraph at lines 289--289
+[]\OT1/cmtt/m/n/10 scp esther730@dtn.brc.berkeley.edu://global/scratch/esther73
+0/Dinsney-counts2/part-00000   /mnt/c/Users/Esther/Desktop/stat243-fall-2017-ma
+ster/section/s07/disney_data[] 
+ []
+
+Package color Info: Redefining color shadecolor on input line 296.
+[4] <figure/unnamed-chunk-5-1.pdf, id=20, 505.89pt x 505.89pt>
+File: figure/unnamed-chunk-5-1.pdf Graphic file (type pdf)
+
+<use figure/unnamed-chunk-5-1.pdf>
+Package pdftex.def Info: figure/unnamed-chunk-5-1.pdf used on input line 342.
+(pdftex.def)             Requested size: 483.69687pt x 483.70361pt.
+
+Overfull \hbox (15.0pt too wide) in paragraph at lines 342--343
+[][] 
+ []
+
+[5]
+Package color Info: Redefining color shadecolor on input line 352.
+LaTeX Font Info:    Try loading font information for OMS+cmtt on input line 363
+.
+ (C:/PROGRA~1/R/R-33~1.2/share/texmf/tex/latex\omscmtt.fd
+File: omscmtt.fd 
+)
+LaTeX Font Info:    Font shape `OMS/cmtt/m/n' in size <10> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 363.
+
+Overfull \hbox (230.2969pt too wide) in paragraph at lines 377--377
+[]    \OT1/cmtt/m/n/10 filename <- paste("/global/scratch/paciorek/wikistats_fu
+ll/dated_for_R/part-", str_pad(i-1, width=5, side="left", pad="0"),sep = "")[] 
+
+ []
+
+
+Overfull \hbox (219.797pt too wide) in paragraph at lines 378--378
+[]     \OT1/cmtt/m/n/10 #filename <- paste("C:/Users/Esther/Desktop/stat243-fal
+l-2017-master/part-",str_pad(i-1, width=5, side="left", pad="0"),sep = "")[] 
+ []
+
+
+Overfull \hbox (141.04768pt too wide) in paragraph at lines 383--383
+[]\OT1/cmtt/m/n/10 results <- data.frame (matrix(sapply(list(result),function(x
+) unlist(strsplit(x,split=" ") ) ), ncol=6, byrow = TRUE) )[] 
+ []
+
+[6 <./figure/unnamed-chunk-5-1.pdf>]
+Package color Info: Redefining color shadecolor on input line 396.
+ [7]
+Underfull \hbox (badness 10000) in paragraph at lines 432--433
+
+ []
+
+Package color Info: Redefining color shadecolor on input line 436.
+
+Overfull \hbox (177.79736pt too wide) in paragraph at lines 458--458
+[]\OT1/cmtt/m/n/10 filename <- mclapply(n,  mc.preschedule=TRUE, function(x) pa
+ste(path,str_pad(i-1, width=5, side="left", pad="0"),sep = "")   )[] 
+ []
+
+
+Overfull \hbox (167.29745pt too wide) in paragraph at lines 460--460
+[]\OT1/cmtt/m/n/10 results <- data.frame( matrix(sapply( unlist( output ), func
+tion(x) unlist(strsplit(x,split=" ") )), ncol=6, byrow = TRUE) )[] 
+ []
+
+
+Overfull \hbox (25.54869pt too wide) in paragraph at lines 467--467
+[]\OT1/cmtt/m/n/10 write.table(results, file=/global/scratch/esther730/results
+_ob.csv,sep = ",",row.names = FALSE)[] 
+ []
+
+Package color Info: Redefining color shadecolor on input line 473.
+
+Overfull \hbox (288.0464pt too wide) in paragraph at lines 505--505
+[]\OT1/cmtt/m/n/10 ##  [1] "1                                                  
+                                                                          Barac
+k_Obama"[] 
+ []
+
+
+Overfull \hbox (288.0464pt too wide) in paragraph at lines 505--505
+[]\OT1/cmtt/m/n/10 ##  [2] "2 Special:AllPages/I_ran_Project_Vote_voter_registr
+ation_drive_in_Illinois,_ACORN_was_smack_dab_in_the_middle_of_it,%22_said_Barac
+k_Obama"[] 
+ []
+
+
+Overfull \hbox (288.0464pt too wide) in paragraph at lines 505--505
+[]\OT1/cmtt/m/n/10 ##  [3] "3                                                  
+                                                           Bilde:Barack_Obama_2
+004.jpg"[] 
+ []
+
+
+Overfull \hbox (288.0464pt too wide) in paragraph at lines 505--505
+[]\OT1/cmtt/m/n/10 ##  [4] "4                                                  
+                                                 Early_life_and_career_of_Barac
+k_Obama"[] 
+ []
+
+
+Overfull \hbox (288.0464pt too wide) in paragraph at lines 505--505
+[]\OT1/cmtt/m/n/10 ##  [5] "5                                                  
+                                                                          Barac
+k_Obama"[] 
+ []
+
+
+Overfull \hbox (288.0464pt too wide) in paragraph at lines 505--505
+[]\OT1/cmtt/m/n/10 ##  [6] "6                                                  
+                                                                 Discuter:Barac
+k_Obama"[] 
+ []
+
+
+Overfull \hbox (99.04805pt too wide) in paragraph at lines 505--505
+[]\OT1/cmtt/m/n/10 ## [21] "> write.table(results, file=/global/scratch/esther
+730/results_ob.csv,sep = \",\",row.names = FALSE)"[] 
+ []
+
+[8]
+Package color Info: Redefining color shadecolor on input line 510.
+
+Overfull \hbox (230.2969pt too wide) in paragraph at lines 535--535
+[]    \OT1/cmtt/m/n/10 filename <- paste("/global/scratch/paciorek/wikistats_fu
+ll/dated_for_R/part-", str_pad(i-1, width=5, side="left", pad="0"),sep = "")[] 
+
+ []
+
+
+Overfull \hbox (141.04768pt too wide) in paragraph at lines 539--539
+[]\OT1/cmtt/m/n/10 results <- data.frame (matrix(sapply(list(result),function(x
+) unlist(strsplit(x,split=" ") ) ), ncol=6, byrow = TRUE) )[] 
+ []
+
+
+Overfull \vbox (0.84482pt too high) detected at line 547
+ []
+
+[9]
+Package color Info: Redefining color shadecolor on input line 552.
+
+Overfull \hbox (288.0464pt too wide) in paragraph at lines 584--584
+[]\OT1/cmtt/m/n/10 ##  [1] "1                                                  
+                                                                          Barac
+k_Obama"[] 
+ []
+
+
+Overfull \hbox (288.0464pt too wide) in paragraph at lines 584--584
+[]\OT1/cmtt/m/n/10 ##  [2] "2 Special:AllPages/I_ran_Project_Vote_voter_registr
+ation_drive_in_Illinois,_ACORN_was_smack_dab_in_the_middle_of_it,%22_said_Barac
+k_Obama"[] 
+ []
+
+
+Overfull \hbox (288.0464pt too wide) in paragraph at lines 584--584
+[]\OT1/cmtt/m/n/10 ##  [3] "3                                                  
+                                                           Bilde:Barack_Obama_2
+004.jpg"[] 
+ []
+
+
+Overfull \hbox (288.0464pt too wide) in paragraph at lines 584--584
+[]\OT1/cmtt/m/n/10 ##  [4] "4                                                  
+                                                 Early_life_and_career_of_Barac
+k_Obama"[] 
+ []
+
+
+Overfull \hbox (288.0464pt too wide) in paragraph at lines 584--584
+[]\OT1/cmtt/m/n/10 ##  [5] "5                                                  
+                                                                          Barac
+k_Obama"[] 
+ []
+
+
+Overfull \hbox (288.0464pt too wide) in paragraph at lines 584--584
+[]\OT1/cmtt/m/n/10 ##  [6] "6                                                  
+                                                                 Discuter:Barac
+k_Obama"[] 
+ []
+
+
+Overfull \hbox (104.298pt too wide) in paragraph at lines 584--584
+[]\OT1/cmtt/m/n/10 ## [21] "> #write.table(results, file=/global/scratch/esthe
+r730/results_ob.csv,sep = \",\",row.names = FALSE)"[] 
+ []
+
+[10] (ps6.aux) ) 
+Here is how much of TeX's memory you used:
+ 2135 strings out of 493323
+ 30544 string characters out of 3139064
+ 115759 words of memory out of 3000000
+ 5650 multiletter control sequences out of 15000+200000
+ 7923 words of font info for 29 fonts, out of 3000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 39i,6n,25p,361b,266s stack positions out of 5000i,500n,10000p,200000b,50000s
+<C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmb
+x12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmitt10.pfb
+><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Prog
+ram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files
+/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Program Files/MiKTeX 2
+.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files/MiKTeX 2.9/fonts
+/type1/public/amsfonts/cm/cmtt10.pfb>
+Output written on ps6.pdf (10 pages, 133744 bytes).
+PDF statistics:
+ 69 PDF objects out of 1000 (max. 8388607)
+ 0 named destinations out of 1000 (max. 500000)
+ 6 words of extra memory for PDF output out of 10000 (max. 10000000)
+
