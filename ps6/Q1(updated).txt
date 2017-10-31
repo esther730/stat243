@@ -1,0 +1,10 @@
+(Brief summary)\\
+The goal of the simulation is to investigate the finite sample properties of the test. How fast does the test statistics(likelihood ratio statistics) converge in distribution to asympototic distribution and the power. They use power under different samples, proportion, alpha levels to assess their method. \\
+
+The author has choosen EM algorithm to use maximum likelihood method to obtain 100 sets of parameters. The sample were generated from standard normal distribution. Those values and sample sizes that used to generate null sample may impact the result. Maybe the author should consider more about difference variance of the two components.\\
+
+The table reveals enough information for the test results. For table 1, personally, I would recommend transfer the row into columns and combine the result of inadjusted test and adjusted test to compare the result more intutive. I would even calcuate the difference of powers. Also, plot some graphes might help reader understand the result better.\\
+
+When the sample size increase, the it will coverge to alpha. Overall, he results makes more sense when sample size increase and D value decrease.\\
+
+In my view, more simulation would be more powerful for the hyopetheis.Size of 10 might not strong enough. Most of the case, the size should at least be 100 to be representive, and not exceed 1000 for the efficency. (general 10\% of the population)\\
