@@ -2,6 +2,8 @@
 %\usepackage[textwidth=18cm, centering]{geometry}
 \usepackage[paper=a4paper,dvips,top=2.5cm,left=2.0cm,right=2.0cm,foot=1cm,bottom=3.2cm]{geometry}
 %\usepackage{blindtext}
+
+\setlength{\parindent}{0pt}
 \title {ps6}
 
 \author {Kehsin Su Esther 3033114294}
@@ -17,16 +19,15 @@ library(pryr)
 @
 \section{Q1}
 (Brief summary)\\
+The goal of the simulation is to investigate the finite sample properties of the test. How fast does the test statistics(likelihood ratio statistics) converge in distribution to asympototic distribution and the power. They use power under different samples, proportion, alpha levels to assess their method. \\
 
-The goal of the simulation is to test the components of normal mixture distribution. They use fisher information matrices to assess their method. The way they approach called minium information ratio estimation and validation, which is based on the ratio of fisher information matrices that build with unknown to known.\\
+The author has choosen EM algorithm to use maximum likelihood method to obtain 100 sets of parameters. The sample were generated from standard normal distribution. Those values and sample sizes that used to generate null sample may impact the result. Maybe the author should consider more about difference variance of the two components.\\
 
-The author has choosen EM algorithm to use maximum likelihood method to obtain 100 sets of parameters. The sample were generated from standard normal distribution. Those values and sample sizes that used to generate null sample may impact the result. Maybe the author should consider more about difference variance of the two components(not sure)\\
+The table reveals enough information for the test results. For table 1, personally, I would recommend transfer the row into columns and combine the result of inadjusted test and adjusted test to compare the result more intutive. I would even calcuate the difference of powers. Also, plot some graphes might help reader understand the result better.\\
 
-The table reveals enough information for the test results. For table 1, personally, I would recommend transfer the row into columns and combine the result of inadjusted test and adjusted test to compare the result more intutive. I would even calcuate the difference of powers.\\
+When the sample size increase, the it will coverge to alpha. Overall, he results makes more sense when sample size increase and D value decrease.\\
 
-The results makes more sense when sample size increase and D value decrease.\\
-
-In my view, more simulation would be more powerful for the hyopetheis.\\
+In my view, more simulation would be more powerful for the hyopetheis.Size of 10 might not strong enough. Most of the case, the size should at least be 100 to be representive, and not exceed 1000 for the efficency. (general 10\% of the population)\\
 
 \section{Q2}
 <<>>=
@@ -303,9 +304,20 @@ dic <- "C:/Users/Esther/Desktop/stat243-fall-2017-master/section/s07/ps6q4dy.out
 output <- readLines(dic)
 tail(output,25)
 @
+Dynamic allocation is better when iterations may take very different amounts of time. However, in this case, the data size for each file in quite similar, so it would better to use static allocation which evenly divide loop iteration space into n chunks. 
 Hence, generally, static allocation is better method than dynamic way in this case.
 
 \section{Q5}
-(attach as hand written version)
+\subsection{(a)}
+(calculation attach as hand written version)\\
+The cholesky will do $\frac{n^{3}}{6}+\frac{n^{2}}{2}-\frac{2n}{3}$ times operations.
+
+\subsection{(b)}
+Yes, we can overwrite the original matrix.\\
+By the formla of cholesky decomposition, first, the a11, which means the first element in the matrix, would onl be used after the square root of it. Hence, it's fine to overwrite it. \\
+
+Second, the first row will be calcuate dividing each element to u11, which is the first element of cholesky matrix we obtained by square root of a11. Hence. According to the step 3 of the fomula that begin to calucate the diagonal by row, and we found that only the elements after calculation will be used to obtain uii and uij(where i is smaller than j). Therefore, it's safe to overwrite the first row. \\
+
+From the fomula, we can found that when calcuate uii and uij, what we need is the corresponding elements from original matrix and the transfer elements from the former rows. Hence, we won't used any corresponding elements of the former rows from the original matrix. Hence, we can overwritten the original matrix by row to each elements.\\
 
 \end{document}
