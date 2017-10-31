@@ -45,12 +45,14 @@ dbListTables(db)
 dbListFields(db, "questions")
 dbListFields(db, "users")
 dbListFields(db, "questions_tags")
+
 # simple query to get 5 rows from a table
 dbGetQuery(db, "select * from questions limit 5")  
 dbGetQuery(db, "select * from users limit 5") 
 dbGetQuery(db, "select * from questions_tags limit 5")
 
-rresult <- dbGetQuery(db, "select distinct userid from
+#select the unique userid that ask questions contain both python and r, then exclude those contain python.
+result <- dbGetQuery(db, "select distinct userid from
           questions Q
           join questions_tags T on Q.questionid = T.questionid
           join users U on Q.ownerid = U.userid
@@ -62,7 +64,8 @@ rresult <- dbGetQuery(db, "select distinct userid from
           join users U on Q.ownerid = U.userid
           where tag = 'python'
           ")
-nrow(rresult)
+#summary the result
+dim(result)
 @
 
 \section{Q3}
@@ -163,10 +166,7 @@ dat <- dat %>% filter(dat$lang == 'en')
 #collect data between Chismas period in 2008.
 #Bedtime Stories release in December 25, 2008.
 sub <- dat %>% filter(dat$date < 20081231 & dat$date > 20081220)
-#pdf('disney-traffic.pdf', width = 5, height = 5)
-#par(mfrow = c(2, 1), mgp = c(1.8, 0.7, 0), mai = c(0.6, 0.6, 0.1, 0.1))
-#plot(dat$chron, dat$hits, type = 'l', xlab = 'time', ylab = 'hits')
-plot(sub$chron, sub$hits, type = 'l', xlab = 'time', ylab = 'hits')
+plot(sub$chron, sub$hits, type = 'l', xlab = 'time', ylab = 'hits', main='Disney hits among Chrismas period in 2008')
 points(sub$chron, sub$hits)
 #dev.off()
 @
@@ -183,6 +183,7 @@ library(stringr)
 library(readr)
 
 #Note: The single function and usuage of str_pad are refer from my classmate, Ming Qiu.
+#write a function to detect the strings that contains "Barack_Obama"
 single <- function(filename){
   data <- readLines(filename)
   library(stringr)
@@ -203,14 +204,15 @@ result <- foreach(
     #outputs
   }
 
+#Transfer result into dataframe
 results <- data.frame (matrix(sapply(list(result),function(x) unlist(strsplit(x,split=" ") ) ), ncol=6, byrow = TRUE) )
+
 #results <- data.frame ( t(sapply(result,function(x) unlist(strsplit(x,split=" ")) ) ))
 colnames(results) <- c("date", "time", "language", "webpage", "number of hits", "page size")
 head(results)
 class(results)
 print(dim(results))
 proc.time()
-
 @
 Part of output file is following:
 <<>>=
@@ -242,9 +244,12 @@ n <- 960
 #n <- 2
 path <- "/global/scratch/paciorek/wikistats_full/dated_for_R/part-"
 #path <- "C:/Users/Esther/Desktop/stat243-fall-2017-master/part-"
+#obtains all the files' directories
 i=1:n
 filename <- mclapply(n,  mc.preschedule=TRUE, function(x) paste(path,str_pad(i-1, width=5, side="left", pad="0"),sep = "")   )
 output <- mclapply(filename[[1]], single,  mc.preschedule=TRUE)
+
+#transfer the data type
 results <- data.frame( matrix(sapply( unlist( output ), function(x) unlist(strsplit(x,split=" ") )), ncol=6, byrow = TRUE) )
 
 colnames(results) <- c("date", "time", "language", "webpage", "number of hits", "page size")
@@ -286,9 +291,10 @@ result <- foreach(
   .combine = c,              
   .verbose = TRUE) %dopar% {     
     filename <- paste("/global/scratch/paciorek/wikistats_full/dated_for_R/part-", str_pad(i-1, width=5, side="left", pad="0"),sep = "")
-    outputs <- mclapply(filename,single, mc.preschedule=FALSE)
+    outputs <- mclapply(filename,single, mc.preschedule=FALSE) #false for dynamic
     #outputs
   }
+#transfer result into dataframe
 results <- data.frame (matrix(sapply(list(result),function(x) unlist(strsplit(x,split=" ") ) ), ncol=6, byrow = TRUE) )
 #results <- data.frame ( t(sapply(result,function(x) unlist(strsplit(x,split=" ")) ) ))
 colnames(results) <- c("date", "time", "language", "webpage", "number of hits", "page size")
