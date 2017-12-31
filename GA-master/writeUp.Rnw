@@ -1,0 +1,59 @@
+\documentclass{article}
+
+\title{STAT 243 Final Group Project}
+\author{
+  Dongyu Lang
+  \and
+  Amanda Mok
+  \and
+  Kehsin Su
+  \and
+  Junyi Tang
+}
+
+\begin{document}
+
+\maketitle
+
+The final version of the project resides at \texttt{https://github.com/amandamok/GA}
+
+\section{Solution description}
+
+This GA package primarily works on objects of two classes: \texttt{chromosome} and \texttt{population}. Objects of class \texttt{chromosome} contain a vector of 0's and 1's indicating a predictor's inclusion in a linear model, as well as the associated fitness (defaults to AIC) of that model. Objects of class \texttt{population} contain the original data (with the response variable as the first column), a list of \texttt{chromosome} objects that represent the models in the population at that generation, and the model with the best fitness out of that generation's population.
+
+The following functions perform operations at the chromosome level. \texttt{initChrom()} initializes an object of class \texttt{chromosome}; if the variable inclusion vector is not provided, then the function will provide a random vector of 0's and 1's. \texttt{convertFormula()} will translate that vector into a formula object for input into \texttt{glm()}. \texttt{evalFitness()} will return the "fitness" (defaults to AIC, but can handle other functions that operate on \texttt{glm} objects) of a chromosome. \texttt{mutateChrom} will convert 0's to 1's and 1's to 0's at some probability \texttt{pMutate} at each locus on a single chromosome.
+
+The following functions perform operations at the population level. \texttt{getFitness()} retrieves the fitness scores for a population of \texttt{chromosome} objects. \texttt{crossover()} takes two \texttt{chromosomes} and induces a "crossover" event at a random locus, producing a single offspring model. \texttt{mutatePop()} performs mutations (as dictated by \texttt{mutateChrom} at the population level. The function \texttt{nextGen} performs all the steps of each generation/iteration: removing the \texttt{pSelect}*100\% models with the lowest fitness, repopulating with new \texttt{chromosome} objects using \texttt{crossover()}, and randomly performing mutations on all \texttt{chromosomes} in the population with \texttt{mutatePop()}.
+
+Finally, a wrapper function \texttt{select()} initializes the population and performs the genetic algorithm, given user-supplied data (with the user supplying the name of the response variable), size of the population at each generation \texttt{popSize}, the proportion of the population to select off at each generation \texttt{pSelect}, the probability of mutation at an individual locus on an individual chromosome \texttt{pMutate}, the number of iterations to run the genetic algorithm \texttt{max\_iter}, the fitness function to minimize \texttt{fitfunc}, and the \texttt{family} parameter to input into \texttt{glm()}. The wrapper function returns the a list with the formula, variable inclusion vector, and associated fitness of the best model after all the iterations; it also plots the best fitness and the average fitness across the population per generation.
+
+\section{Testing}
+
+Each function in the package is tested if the output is of the correct class. When appropriate, the function is tested for when the user provides the incorrect input. If the function provides a consistent result (i.e. \texttt{evalFitness} and \texttt{convertFormula}), the output of the function is compared to results if another method was used.
+
+\section{Example implementation}
+
+<<cache=T>>=
+devtools::install_github(paste0("amandamok", "/GA"), force=T)
+library(GA)
+
+set.seed(1)
+results = select(mtcars, "mpg", popSize=50)
+results$model
+results$fitness
+@
+
+\section{Contributions}
+
+Group members contributed to the final project as follows:
+
+Dongyu Lang: package tests (initialization)
+
+Amanda Mok: helper functions that operate on \texttt{chromosome} and \texttt{population} objects; project write-up (mutation, crossover)
+
+Kehsin Su: package documentation (model selection)
+
+Junyi Tang: wrapper function and plotting of results (write up and function wrap up)\\
+
+Note: parentheses is the original part of works. Considering consistency and the efficiency, we finally used Ameanda's version, but all the members have written up their functions at the beginning.
+\end{document}

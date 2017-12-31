@@ -1,0 +1,11 @@
+Package: GA
+Type: Package
+Title: Genetic algorithm for linear models
+Version: 0.1.0
+Authors: Dongyu Lang, Amanda Mok, Esther Su, Junyi Tang
+Maintainer: Amanda Mok <a.mok@berkeley.edu>
+Description: Uses genetic algorithm to perform variable selection in linear models
+License: GPL-2
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.0.1
